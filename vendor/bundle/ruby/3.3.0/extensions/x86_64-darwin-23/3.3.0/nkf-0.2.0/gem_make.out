@@ -1,0 +1,18 @@
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/nkf-0.2.0/ext/nkf
+/Users/irvinglamadrid/.rbenv/versions/3.3.1/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20240530-45314-dy3at1 sitelibdir\=./.gem.20240530-45314-dy3at1 clean
+
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20240530-45314-dy3at1 sitelibdir\=./.gem.20240530-45314-dy3at1
+compiling nkf.c
+linking shared-object nkf.bundle
+
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20240530-45314-dy3at1 sitelibdir\=./.gem.20240530-45314-dy3at1 install
+/usr/bin/install -c -m 0755 nkf.bundle ./.gem.20240530-45314-dy3at1
+
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20240530-45314-dy3at1 sitelibdir\=./.gem.20240530-45314-dy3at1 clean

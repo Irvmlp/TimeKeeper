@@ -1,0 +1,16 @@
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/json-2.7.2/ext/json
+/Users/irvinglamadrid/.rbenv/versions/3.3.1/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240530-45314-k7w5sn sitelibdir\=./.gem.20240530-45314-k7w5sn clean
+
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240530-45314-k7w5sn sitelibdir\=./.gem.20240530-45314-k7w5sn
+make: Nothing to be done for `all'.
+
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240530-45314-k7w5sn sitelibdir\=./.gem.20240530-45314-k7w5sn install
+
+current directory: /Users/irvinglamadrid/1-TimeKeeperApp/TimeLogger/vendor/bundle/ruby/3.3.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240530-45314-k7w5sn sitelibdir\=./.gem.20240530-45314-k7w5sn clean
