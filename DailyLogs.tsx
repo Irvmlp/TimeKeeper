@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Modal, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Modal, Button, Dimensions } from 'react-native';
 import { RealmContext } from './RealmWrapper';
+import { BarChart } from 'react-native-chart-kit';
+
+const screenWidth = Dimensions.get('window').width;
 
 const DailyLogs = () => {
   const { user, app } = useContext(RealmContext);
@@ -41,12 +44,18 @@ const DailyLogs = () => {
   };
 
   const handleSaveEdit = async () => {
+    const duration = parseInt(newDuration, 10);
+    if (isNaN(duration) || duration < 0 || duration > 12) {
+      alert('Duration must be between 0 and 12 hours.');
+      return;
+    }
+
     const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
 
     try {
       await realm.updateOne(
         { _id: editingLog._id },
-        { $set: { duration: parseInt(newDuration, 10) } }
+        { $set: { duration: duration } }
       );
       setEditingLog(null);
       setRefresh(!refresh); // Toggle refresh to re-fetch data
@@ -60,55 +69,104 @@ const DailyLogs = () => {
     setNewDuration('');
   };
 
+  const chartData = {
+    labels: activityLogs.map(log => log.title),
+    datasets: [
+      {
+        data: activityLogs.map(log => log.duration)
+      }
+    ]
+  };
+
   return (
-    <FlatList
-      data={activityLogs}
-      keyExtractor={item => item._id.toString()}
-      renderItem={({ item }) => (
-        <View style={styles.item}>
-          <View style={styles.itemContent}>
-            <Text style={styles.itemText}>{item.title}</Text>
-            <Text style={styles.itemText}>{item.description}</Text>
-            <Text style={styles.itemText}>{item.duration} minutes</Text>
-          </View>
-          <TouchableOpacity onPress={() => handleEdit(item)}>
-            <Text style={styles.editButton}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleDelete(item._id)}>
-            <Text style={styles.deleteButton}>Delete</Text>
-          </TouchableOpacity>
-          {editingLog && editingLog._id === item._id && (
-            <Modal transparent={true} animationType="slide">
-              <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                  <Text>Edit Duration</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Duration"
-                    value={newDuration}
-                    onChangeText={setNewDuration}
-                    keyboardType="numeric"
-                  />
-                  <Button title="Save" onPress={handleSaveEdit} />
-                  <Button title="Cancel" onPress={handleCancelEdit} />
+    <View style={styles.container}>
+      <Text style={styles.chartTitle}>Daily Activity Breakdown</Text>
+      <BarChart
+        data={chartData}
+        width={screenWidth - 16} // from react-native
+        height={220}
+        yAxisLabel=""
+        yAxisSuffix=" hrs"
+        yAxisInterval={1} // optional, defaults to 1
+        chartConfig={{
+          backgroundColor: "white",
+          backgroundGradientFrom: "blue",
+          backgroundGradientTo: "#ffa726",
+          decimalPlaces: 2, // optional, defaults to 2dp
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          style: {
+            borderRadius: 16
+          },
+          propsForDots: {
+            r: "6",
+            strokeWidth: "2",
+            stroke: "#ffa726"
+          }
+        }}
+        style={{
+          marginVertical: 8,
+          borderRadius: 16
+        }}
+      />
+      <FlatList
+        data={activityLogs}
+        keyExtractor={item => item._id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <View style={styles.itemContent}>
+              <Text style={styles.itemText}>{item.title}</Text>
+              <Text style={styles.itemText}>{item.description}</Text>
+              <Text style={styles.itemText}>{item.duration} hrs</Text>
+            </View>
+            <TouchableOpacity onPress={() => handleEdit(item)}>
+              <Text style={styles.editButton}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleDelete(item._id)}>
+              <Text style={styles.deleteButton}>Delete</Text>
+            </TouchableOpacity>
+            {editingLog && editingLog._id === item._id && (
+              <Modal transparent={true} animationType="slide">
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalContent}> 
+                    <Text>Edit Duration</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Duration"
+                      value={newDuration}
+                      onChangeText={setNewDuration}
+                      keyboardType="numeric"
+                    />
+                    <Button title="Save" onPress={handleSaveEdit} />
+                    <Button title="Cancel" onPress={handleCancelEdit} />
+                  </View>
                 </View>
-              </View>
-            </Modal>
-          )}
-        </View>
-      )}
-      showsVerticalScrollIndicator={false}
-    />
+              </Modal>
+            )}
+          </View>
+        )}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 8,
+  },
+  chartTitle: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginVertical: 16,
+  },
   item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    width: 300,
+    width: screenWidth - 32,
     margin: 8,
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -120,6 +178,7 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     flex: 1,
+    gap: 6, 
     flexDirection: 'row',
   },
   itemText: {

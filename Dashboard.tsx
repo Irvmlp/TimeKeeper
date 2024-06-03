@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
 import AllDailyActivities from './AllDailyActivities';
 import AddDailyActivity from './AddDailyActivities';
 import DailyLogs from './DailyLogs';
@@ -21,39 +21,39 @@ const Dashboard = () => {
     setEditActivities(!editActivities);
   };
 
-  const handleAddComplete = () => {
-    setShowAddActivity(false);
-    handleRefresh();
-  };
+  const renderHeader = () => (
+    <>
+      <Text style={styles.title}>Dashboard</Text>
+      <View style={styles.logsContainer}>
+        <DailyLogs key={`log-${refresh}`} />
+      </View>
+    </>
+  );
 
-  return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>Today App</Text>
-       
-       <View style={styles.VisualContainer}>
-
-       </View>
-
-        <View style={styles.logsContainer}>
-          <DailyLogs key={`log-${refresh}`} />
-        </View>
-      </ScrollView>
-      <View style={styles.activityContainer}>
-        {showAddActivity && <AddDailyActivity onAdd={handleAddComplete} />}
-        <View style={styles.activitiesContainer}>
-          <AllDailyActivities key={refresh} editable={editActivities} onLogActivity={handleRefresh} />
-        </View>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.button} onPress={toggleEditActivities}>
-            <Text style={styles.buttonText}>Delete</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={toggleAddActivity}>
-            <Text style={styles.buttonText}>{showAddActivity ? "Cancel" : "+"}</Text>
-          </TouchableOpacity>
-        </View>
+  const renderFooter = () => (
+    <View style={styles.activityContainer}>
+      {showAddActivity && <AddDailyActivity onAdd={handleRefresh} />}
+      <View style={styles.activitiesContainer}>
+        <AllDailyActivities key={refresh} editable={editActivities} onLogActivity={handleRefresh} />
+      </View>
+      <View style={styles.buttonRow}>
+        <TouchableOpacity style={styles.button} onPress={toggleEditActivities}>
+          <Text style={styles.buttonText}>Delete</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={toggleAddActivity}>
+          <Text style={styles.buttonText}>{showAddActivity ? "Cancel" : "+"}</Text>
+        </TouchableOpacity>
       </View>
     </View>
+  );
+
+  return (
+    <FlatList
+      data={[]}
+      ListHeaderComponent={renderHeader}
+      ListFooterComponent={renderFooter}
+      keyExtractor={(item, index) => index.toString()}
+    />
   );
 };
 
@@ -61,9 +61,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
-  },
-  VisualContainer: {
-    height: 300,
   },
   scrollContainer: {
     padding: 8,
@@ -78,12 +75,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   activityContainer: {
-    position: 'absolute',
-    bottom: 30,
-    left: 0,
-    right: 0,
-    backgroundColor: '#f8f8f8',
     padding: 8,
+    backgroundColor: '#f8f8f8',
     borderTopWidth: 1,
     borderTopColor: '#ccc',
   },
