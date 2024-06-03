@@ -13,6 +13,7 @@
     "@realm/react": "^0.7.0",
     "react": "18.2.0",
     "react-native": "0.74.1",
+    "react-native-emoji-input": "^1.1.10",
     "realm": "^12.9.0"
   },
   "devDependencies": {

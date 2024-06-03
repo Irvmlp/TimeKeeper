@@ -1,13 +1,15 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Modal, TouchableOpacity, Text } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 import { DailyData } from './DailyData';
+import EmojiInput from 'react-native-emoji-input';
 
 const AddDailyActivity = ({ onAdd }) => {
   const { user, app } = useContext(RealmContext);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [duration, setDuration] = useState('');
+  const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
   const handleAddData = async () => {
     if (!title || !description || !duration) return;
@@ -34,14 +36,21 @@ const AddDailyActivity = ({ onAdd }) => {
     setDuration('');
   };
 
+  const handleEmojiSelect = (emoji) => {
+    setTitle(title + emoji.char);
+    setIsEmojiPickerVisible(false);
+  };
+
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-      />
+      <TouchableOpacity onPress={() => setIsEmojiPickerVisible(true)}>
+        <TextInput
+          style={styles.input}
+          placeholder="Title"
+          value={title}
+          onChangeText={setTitle}
+        />
+      </TouchableOpacity>
       <TextInput
         style={styles.input}
         placeholder="Description"
@@ -56,6 +65,13 @@ const AddDailyActivity = ({ onAdd }) => {
         keyboardType="numeric"
       />
       <Button title="Add Data" onPress={handleAddData} />
+
+      <Modal visible={isEmojiPickerVisible} transparent={true} animationType="slide">
+        <View style={styles.modalContainer}>
+          <EmojiInput onEmojiSelected={handleEmojiSelect} />
+          <Button title="Close" onPress={() => setIsEmojiPickerVisible(false)} />
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -65,11 +81,17 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   input: {
-    height: 40,
+    height: 20,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
 });
 
