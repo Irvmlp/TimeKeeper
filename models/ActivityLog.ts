@@ -1,4 +1,5 @@
-import { Realm, createRealmContext } from '@realm/react';
+// ActivityLog.ts
+import { Realm } from '@realm/react';
 
 export class ActivityLog extends Realm.Object {
   _id!: Realm.BSON.ObjectId;
@@ -21,7 +22,3 @@ export class ActivityLog extends Realm.Object {
     },
   };
 }
-
-export const ActivityLogContext = createRealmContext({
-  schema: [ActivityLog],
-});

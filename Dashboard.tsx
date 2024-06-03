@@ -23,7 +23,6 @@ const Dashboard = () => {
 
   const renderHeader = () => (
     <>
-      <Text style={styles.title}>Dashboard</Text>
       <View style={styles.logsContainer}>
         <DailyLogs key={`log-${refresh}`} />
       </View>
@@ -59,8 +58,8 @@ const Dashboard = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     position: 'relative',
+    marginTop: 80,
   },
   scrollContainer: {
     padding: 8,

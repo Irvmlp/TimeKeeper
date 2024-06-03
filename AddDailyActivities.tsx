@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 
 const AddDailyActivity = ({ onAdd }) => {
@@ -7,17 +7,28 @@ const AddDailyActivity = ({ onAdd }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [duration, setDuration] = useState('');
+  const [error, setError] = useState('');
 
   const handleAddData = async () => {
     if (!title || !description || !duration) return;
 
     const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("DailyEntries");
+
+    // Calculate the total logged time for the day
+    const totalLoggedTime = (await realm.find({ userId: user.id, timestamp: { $gte: new Date().setHours(0, 0, 0, 0) } })).reduce((sum, entry) => sum + entry.duration, 0);
+    const newEntryDuration = parseInt(duration, 10);
+
+    if (totalLoggedTime + newEntryDuration > 24) {
+      setError('Total logged time exceeds 24 hours');
+      return;
+    }
+
     const newData = {
       _id: new Realm.BSON.ObjectId(),
       userId: user.id,
       title,
       description,
-      duration: parseInt(duration, 10),
+      duration: newEntryDuration,
       timestamp: new Date(),
     };
 
@@ -27,8 +38,9 @@ const AddDailyActivity = ({ onAdd }) => {
       setTitle('');
       setDescription('');
       setDuration('');
+      setError('');
     } catch (err) {
-      console.error("Failed to add💤 🧼🍽️💻data", err);
+      console.error("Failed to add data", err);
     }
   };
 
@@ -39,7 +51,6 @@ const AddDailyActivity = ({ onAdd }) => {
         placeholder="Title"
         value={title}
         onChangeText={setTitle}
-        onFocus={() => setTitle(title + " ")}
       />
       <TextInput
         style={styles.input}
@@ -54,6 +65,7 @@ const AddDailyActivity = ({ onAdd }) => {
         onChangeText={setDuration}
         keyboardType="numeric"
       />
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <Button title="Add Data" onPress={handleAddData} />
     </View>
   );
@@ -69,6 +81,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 12,
   },
 });
 
