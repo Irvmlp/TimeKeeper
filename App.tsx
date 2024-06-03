@@ -11,7 +11,7 @@ const App = () => {
     <View style={{ flex: 1 }}>
       {user ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>{`Logged in as ${user.id}`}</Text>
+         {/*  <Text>{`Logged in as ${user.id}`}</Text> */}
           <Dashboard/>
         </View>
       ) : (

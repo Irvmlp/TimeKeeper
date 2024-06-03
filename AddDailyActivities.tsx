@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Button, StyleSheet, Modal, TouchableOpacity, Text } from 'react-native';
 import { RealmContext } from './RealmWrapper';
-import { DailyData } from './DailyData';
 import EmojiInput from 'react-native-emoji-input';
 
 const AddDailyActivity = ({ onAdd }) => {
@@ -26,14 +25,10 @@ const AddDailyActivity = ({ onAdd }) => {
 
     try {
       await realm.insertOne(newData);
-      onAdd(); // Notify parent to refresh the list
+      onAdd(); // Notify parent to refresh the list and close the add data form
     } catch (err) {
       console.error("Failed to add data", err);
     }
-
-    setTitle('');
-    setDescription('');
-    setDuration('');
   };
 
   const handleEmojiSelect = (emoji) => {

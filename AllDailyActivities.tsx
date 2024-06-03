@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 import { DailyData } from './DailyData';
+import { ActivityLog } from './ActivityLog';
 
-const AllDailyActivities = ({ editable }) => {
+const AllDailyActivities = ({ editable, onLogActivity }) => {
   const { user, app } = useContext(RealmContext);
   const [dailyData, setDailyData] = useState([]);
-  const [selectedItemId, setSelectedItemId] = useState(null);
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
@@ -35,16 +35,26 @@ const AllDailyActivities = ({ editable }) => {
     }
   };
 
-  const handleItemPress = (id) => {
-    setSelectedItemId(selectedItemId === id ? null : id);
-  };
+  const handleItemPress = async (item) => {
+    if (onLogActivity) {
+      const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
+      const newLog = {
+        _id: new Realm.BSON.ObjectId(),
+        userId: user.id,
+        title: item.title,
+        description: item.description,
+        duration: item.duration,
+        timestamp: new Date(),
+      };
 
-  const renderDetails = (item) => (
-    <View style={styles.detailsContainer}>
-      <Text style={styles.detailText}>Description: {item.description}</Text>
-      <Text style={styles.detailText}>Duration: {item.duration} minutes</Text>
-    </View>
-  );
+      try {
+        await realm.insertOne(newLog);
+        onLogActivity(); // Notify parent to refresh the logs list
+      } catch (err) {
+        console.error("Failed to log activity", err);
+      }
+    }
+  };
 
   return (
     <FlatList
@@ -52,7 +62,7 @@ const AllDailyActivities = ({ editable }) => {
       keyExtractor={item => item._id.toString()}
       renderItem={({ item }) => (
         <View>
-          <TouchableOpacity style={styles.item} onPress={() => handleItemPress(item._id)}>
+          <TouchableOpacity style={styles.item} onPress={() => handleItemPress(item)}>
             <Text style={styles.itemText}>{item.title}</Text>
             {editable && (
               <TouchableOpacity onPress={() => handleDelete(item._id)}>
@@ -60,7 +70,6 @@ const AllDailyActivities = ({ editable }) => {
               </TouchableOpacity>
             )}
           </TouchableOpacity>
-          {selectedItemId === item._id && renderDetails(item)}
         </View>
       )}
       horizontal
@@ -73,16 +82,13 @@ const styles = StyleSheet.create({
   item: {
     padding: 16,
     margin: 8,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    elevation: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+   
   },
   itemText: {
     fontSize: 16,
@@ -90,17 +96,6 @@ const styles = StyleSheet.create({
   deleteButton: {
     color: 'red',
     fontWeight: 'bold',
-  },
-  detailsContainer: {
-    padding: 16,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    marginHorizontal: 8,
-    marginBottom: 8,
-  },
-  detailText: {
-    fontSize: 14,
-    marginBottom: 4,
   },
 });
 
