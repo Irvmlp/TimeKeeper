@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 
+
 const LoginScreen = () => {
   const { app, setUser } = useContext(RealmContext);
   const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ const LoginScreen = () => {
       setUser(user);
     } catch (err) {
       console.error("Failed to log in", err);
-      alert("Login failed. Please check your credentials.");
+      alert("Login failed. Please check your credensh**tials.");
     } finally {
       setLoading(false);
     }
@@ -44,7 +45,11 @@ const LoginScreen = () => {
             onChangeText={setPassword}
             secureTextEntry
           />
-          <Button title="Login" onPress={handleLogin} />
+          <View style={styles.button}>
+             <Button title="Login"  onPress={handleLogin} />
+          </View>
+        
+
         </>
       )}
     </View>
@@ -54,20 +59,38 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'lightblue',
     justifyContent: 'center',
-    paddingHorizontal: 16,
+    alignItems: 'center', 
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 20,
     textAlign: 'center',
+    color: 'darkblue',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    width: '100%',
+    height: 50,
+    backgroundColor: '#ffffff',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
+    borderColor: '#dddddd',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    fontSize: 16,
+  },
+  button: {
+    width: '100%',
+    height: 50,
+    backgroundColor: 'black',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    color: 'white',
   },
 });
 

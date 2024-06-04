@@ -47,14 +47,17 @@ export default StyleSheet.create({
     borderBottomColor: 'gray',  // Add this line
     shadowRadius: 2,
     elevation: 4,
+    
   },
   itemContent: {
     flex: 1,
     gap: 6,
     flexDirection: 'row',
   },
-  itemText: {
-    fontSize: 16,
+  itemEmoji: {
+    fontSize: 12,
+    padding: 3,
+    backgroundColor: 'white',
   },
   itemText2: {
     width: 90,

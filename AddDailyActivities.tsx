@@ -60,7 +60,7 @@ const AddDailyActivity = ({ onAdd }) => {
         keyboardType="numeric"
       />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <Button title="Add Data 💚" onPress={handleAddData} />
+      <Button title="Add Data" onPress={handleAddData} />
     </View>
   );
 };
@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+    backgroundColor: 'white',
   },
   errorText: {
     color: 'red',

@@ -14,6 +14,7 @@ const DailyLogs = () => {
   const [newDuration, setNewDuration] = useState('');
   const [timeFrame, setTimeFrame] = useState('day');
   const [error, setError] = useState('');
+  const [editLoggedItems, setLoggedItems] = useState(false);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -264,6 +265,10 @@ const DailyLogs = () => {
     }
   };
 
+  const toggleeditLoggedItems = () => {
+    setLoggedItems(!editLoggedItems);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.timeFrameButtons}>
@@ -279,29 +284,34 @@ const DailyLogs = () => {
       </View>
       <BarChart
         data={chartData}
-        width={screenWidth - 16}
+        width={screenWidth - 26}
         height={220}
-        yAxisLabel=""
         yAxisSuffix=" hrs"
-        yAxisInterval={1}
+        yAxisInterval={.5}
         chartConfig={{
-          backgroundColor: "white",
+          barPercentage: .3,
+          backgroundColor:"#white",
           backgroundGradientFrom: "white",
           backgroundGradientTo: "white",
-          decimalPlaces: 2,
-          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          decimalPlaces: 1,
+          color: (opacity = 1) => `rgba(55, 81, 95, ${opacity})`,
           labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
           style: {
-            borderRadius: 16,
+            borderRadius: 3,
           },
           propsForDots: {
-            r: "6",
-            strokeWidth: "2",
-            stroke: "#ffa726"
+            r: "2",
+            strokeWidth: ".5",
+            stroke: "black"
           },
           propsForBackgroundLines: {
-            stroke: "green",
-          }
+            stroke: "white",
+          },
+          propsForLabels: {
+            fontSize: "14",
+            fontWeight: 500,
+            padding: 2,
+        },
         }}
         style={{
           borderRadius: 4,
@@ -315,16 +325,19 @@ const DailyLogs = () => {
         renderItem={({ item }) => (
           <View style={styles.item}>
             <View style={styles.itemContent}>
-              <Text style={styles.itemText}>{item.title}</Text>
+              <Text style={styles.itemEmoji}>{item.title}</Text>
               <Text style={styles.itemText2}> | {item.description}</Text>
-              <Text style={styles.itemText}> | {item.duration} hrs</Text>
+              <Text style={styles.itemText2}> | {item.duration} hrs</Text>
             </View>
+
             <TouchableOpacity onPress={() => handleEdit(item)}>
               <Text style={styles.editButton}>Edit</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleDelete(item._id)}>
               <Text style={styles.deleteButton}>Delete</Text>
             </TouchableOpacity>
+
+            
           </View>
         )}
         showsVerticalScrollIndicator={false}

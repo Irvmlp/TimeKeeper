@@ -31,19 +31,26 @@ const Dashboard = () => {
 
   const renderFooter = () => (
     <View style={styles.footerContainer}>
+      <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.DeleteButton} onPress={toggleEditActivities}>
+            <Text style={styles.buttonText}>Delete</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.Addbutton} onPress={toggleAddActivity}>
+            <Text style={styles.buttonText}>{showAddActivity ? "✓" : "Add"}</Text>
+          </TouchableOpacity>
+        </View>
+    
       <View style={styles.activityContainer}>
         {showAddActivity && <AddDailyActivity onAdd={handleRefresh} />}
         <View style={styles.activitiesContainer}>
-          <AllDailyActivities key={refresh} editable={editActivities} onLogActivity={handleRefresh} />
+          <AllDailyActivities
+            key={refresh}
+            editable={editActivities}
+            onLogActivity={handleRefresh}
+            onDelete={handleRefresh} // Added onDelete prop
+          />
         </View>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.DeleteButton} onPress={toggleEditActivities}>
-            <Text style={styles.buttonText}>-</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.Addbutton} onPress={toggleAddActivity}>
-            <Text style={styles.buttonText}>{showAddActivity ? "Cancel" : "+"}</Text>
-          </TouchableOpacity>
-        </View>
+        
       </View>
     </View>
   );
@@ -80,53 +87,53 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     position: 'absolute',
-    backgroundColor: 'lightyellow',
     bottom: 0,
     left: 0,
     right: 0,
+    backgroundColor: 'white',
   },
   activityContainer: {
     padding: 8,
   },
   activitiesContainer: {
-    marginBottom: 16,
+    marginBottom: 30,
+    marginHorizontal: 10,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginHorizontal: 10,
   },
   DeleteButton: {
     alignItems: 'center',
-    width: 55,
-    height: 55,
-    padding: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    justifyContent: 'center',
     margin: 4,
-    backgroundColor: 'white',
+    backgroundColor: '#FF5A5F',
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    borderBottomLeftRadius: 30,
   },
   Addbutton: {
     alignItems: 'center',
-    width: 55,
-    height: 55,
-    padding: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    justifyContent: 'center',
     margin: 4,
-    backgroundColor: 'white',
+    backgroundColor: '#087E8B',
     borderRadius: 8,
-    borderBottomRightRadius: 30,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
   },
   buttonText: {
-    color: '#000',
+    color: '#fff',
     fontSize: 16,
+    fontFamily: 'bold',
   },
 });
 
