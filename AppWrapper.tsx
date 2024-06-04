@@ -3,9 +3,12 @@ import RealmWrapper from './RealmWrapper';
 import App from './App';
 
 const AppWrapper = () => (
-  <RealmWrapper>
+<RealmWrapper>
     <App />
   </RealmWrapper>
 );
 
+
 export default AppWrapper;
+
+

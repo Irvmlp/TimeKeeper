@@ -30,40 +30,45 @@ const Dashboard = () => {
   );
 
   const renderFooter = () => (
-    <View style={styles.activityContainer}>
-      {showAddActivity && <AddDailyActivity onAdd={handleRefresh} />}
-      <View style={styles.activitiesContainer}>
-        <AllDailyActivities key={refresh} editable={editActivities} onLogActivity={handleRefresh} />
-      </View>
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.button} onPress={toggleEditActivities}>
-          <Text style={styles.buttonText}>Delete</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={toggleAddActivity}>
-          <Text style={styles.buttonText}>{showAddActivity ? "Cancel" : "+"}</Text>
-        </TouchableOpacity>
+    <View style={styles.footerContainer}>
+      <View style={styles.activityContainer}>
+        {showAddActivity && <AddDailyActivity onAdd={handleRefresh} />}
+        <View style={styles.activitiesContainer}>
+          <AllDailyActivities key={refresh} editable={editActivities} onLogActivity={handleRefresh} />
+        </View>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.DeleteButton} onPress={toggleEditActivities}>
+            <Text style={styles.buttonText}>-</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.Addbutton} onPress={toggleAddActivity}>
+            <Text style={styles.buttonText}>{showAddActivity ? "Cancel" : "+"}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 
   return (
-    <FlatList
-      data={[]}
-      ListHeaderComponent={renderHeader}
-      ListFooterComponent={renderFooter}
-      keyExtractor={(item, index) => index.toString()}
-    />
+    <View style={styles.container}>
+      <FlatList
+        data={[]}
+        ListHeaderComponent={renderHeader}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.scrollContainer}
+      />
+      {renderFooter()}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
-    marginTop: 80,
+    flex: 1,
+    justifyContent: 'space-between',
   },
   scrollContainer: {
-    padding: 8,
-    paddingBottom: 100, // Space for the fixed bottom container
+    padding: 0,
+    paddingBottom: 150, // Space for the fixed bottom container
   },
   title: {
     fontSize: 24,
@@ -73,30 +78,54 @@ const styles = StyleSheet.create({
   logsContainer: {
     marginBottom: 16,
   },
+  footerContainer: {
+    position: 'absolute',
+    backgroundColor: 'lightyellow',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
   activityContainer: {
     padding: 8,
-    backgroundColor: '#f8f8f8',
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
   },
   activitiesContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
     marginBottom: 16,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 10,
   },
-  button: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
+  DeleteButton: {
     alignItems: 'center',
-    width: '45%',
+    width: 55,
+    height: 55,
+    padding: 12,
+    margin: 4,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    borderBottomLeftRadius: 30,
+  },
+  Addbutton: {
+    alignItems: 'center',
+    width: 55,
+    height: 55,
+    padding: 12,
+    margin: 4,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    borderBottomRightRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
   },
   buttonText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
   },
 });

@@ -6,41 +6,35 @@ const AddDailyActivity = ({ onAdd }) => {
   const { user, app } = useContext(RealmContext);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [duration, setDuration] = useState('');
+  const [desiredDuration, setDesiredDuration] = useState('');
   const [error, setError] = useState('');
 
   const handleAddData = async () => {
-    if (!title || !description || !duration) return;
+    if (!title || !description || !desiredDuration) return;
 
     const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("DailyEntries");
 
-    // Calculate the total logged time for the day
-    const totalLoggedTime = (await realm.find({ userId: user.id, timestamp: { $gte: new Date().setHours(0, 0, 0, 0) } })).reduce((sum, entry) => sum + entry.duration, 0);
-    const newEntryDuration = parseInt(duration, 10);
-
-    if (totalLoggedTime + newEntryDuration > 24) {
-      setError('Total logged time exceeds 24 hours');
-      return;
-    }
+    const newEntryDesiredDuration = parseInt(desiredDuration, 10); // Parse desired duration
 
     const newData = {
       _id: new Realm.BSON.ObjectId(),
       userId: user.id,
       title,
       description,
-      duration: newEntryDuration,
+      desiredDuration: newEntryDesiredDuration, // Include desired duration
       timestamp: new Date(),
     };
 
     try {
       await realm.insertOne(newData);
-      onAdd(); // Notify parent to refresh the list and close the add data form
+      onAdd();
       setTitle('');
       setDescription('');
-      setDuration('');
+      setDesiredDuration(''); // Reset desired duration
       setError('');
     } catch (err) {
       console.error("Failed to add data", err);
+      setError('Failed to add data');
     }
   };
 
@@ -60,16 +54,17 @@ const AddDailyActivity = ({ onAdd }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Duration (in hours)"
-        value={duration}
-        onChangeText={setDuration}
+        placeholder="Desired Duration (in hours)"
+        value={desiredDuration}
+        onChangeText={setDesiredDuration}
         keyboardType="numeric"
       />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <Button title="Add Data" onPress={handleAddData} />
+      <Button title="Add Data 💚" onPress={handleAddData} />
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

@@ -7,6 +7,7 @@ export class ActivityLog extends Realm.Object {
   title!: string;
   description!: string;
   duration!: number;
+  desiredDuration!: number; // Add this field
   timestamp!: Date;
 
   static schema = {
@@ -18,6 +19,7 @@ export class ActivityLog extends Realm.Object {
       title: 'string',
       description: 'string',
       duration: 'int',
+      desiredDuration: 'int', // Add this field
       timestamp: 'date',
     },
   };

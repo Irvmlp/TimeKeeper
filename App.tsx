@@ -27,8 +27,9 @@ const styles = StyleSheet.create({
   headerContainer: {
     padding: 2,
     marginTop: 88,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginLeft: 12,
+    alignItems: 'left',
+    justifyContent: 'left',
   },
   headerTitle: {
     fontSize: 24,
