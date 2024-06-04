@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Button } from 'react-native';
 import { RealmContext } from './RealmWrapper';
-import { ActivityLog } from './models/ActivityLog';
 
 const AllDailyActivities = ({ editable, onLogActivity }) => {
   const { user, app } = useContext(RealmContext);
@@ -44,39 +43,23 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
 
   const handleDelete = async (id) => {
     console.log(`Attempting to delete activity with id: ${id}`);
-    const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
+    const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("DailyEntries");
 
     try {
-      const logToDelete = await realm.findOne({ _id: id });
+      const objectId = new Realm.BSON.ObjectId(id);
+      console.log(`Converted id to ObjectId: ${objectId}`);
+      const logToDelete = await realm.findOne({ _id: objectId });
       console.log(`Found log to delete: ${JSON.stringify(logToDelete)}`);
 
-      await realm.deleteOne({ _id: id });
-      console.log(`Successfully deleted log with id: ${id}`);
+      if (logToDelete) {
+        await realm.deleteOne({ _id: objectId });
+        console.log(`Successfully deleted log with id: ${id}`);
 
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-
-      const totalLoggedTime = (await realm.aggregate([
-        { $match: { userId: user.id, timestamp: { $gte: startOfDay }, title: { $ne: "🕒" } } },
-        { $group: { _id: null, total: { $sum: "$duration" } } }
-      ])).reduce((sum, log) => sum + log.total, 0);
-
-      const unloggedTimeLog = await realm.findOne({
-        userId: user.id,
-        timestamp: { $gte: startOfDay },
-        title: "🕒"
-      });
-
-      if (unloggedTimeLog) {
-        const updatedUnloggedTimeDuration = 24 - totalLoggedTime;
-        await realm.updateOne(
-          { _id: unloggedTimeLog._id },
-          { $set: { duration: updatedUnloggedTimeDuration } }
-        );
-        console.log(`Updated unlogged time duration: ${updatedUnloggedTimeDuration}`);
+        setRefresh(!refresh);
+        onLogActivity(); // Refresh the list in the parent component
+      } else {
+        console.error(`Log with id ${id} not found.`);
       }
-
-      setRefresh(!refresh);
     } catch (err) {
       console.error("Failed to delete data", err);
     }
@@ -231,8 +214,8 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
             <TouchableOpacity style={styles.item} onPress={() => handleItemPress(item)}>
               <Text style={styles.itemText}>{item.title}</Text>
               {editable && (
-                <TouchableOpacity onPress={() => handleDelete(item._id)}>
-                  <Text style={styles.deleteButton}>X</Text>
+                <TouchableOpacity onPress={() => handleDelete(item._id.toString())}>
+                  <Text style={styles.deleteButton}>Delete</Text>
                 </TouchableOpacity>
               )}
             </TouchableOpacity>
@@ -265,11 +248,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   deleteButton: {
-    color: 'white',
-    padding: 2,
-    position: 'absolute',
-    backgroundColor: 'red',
+    color: 'red',
     fontWeight: 'bold',
+    marginLeft: 10,
   },
   modalContainer: {
     flex: 1,

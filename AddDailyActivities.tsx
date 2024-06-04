@@ -51,7 +51,7 @@ const AddDailyActivity = ({ onAdd }) => {
         placeholder="Description"
         value={description}
         onChangeText={setDescription}
-      />
+      /> 
       <TextInput
         style={styles.input}
         placeholder="Desired Duration (in hours)"

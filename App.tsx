@@ -11,6 +11,7 @@ const App = () => {
     <View style={{ flex: 1 }}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Today</Text>
+        <Text style={styles.headerMenu}>sum</Text>
       </View>
       {user ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -30,6 +31,16 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     alignItems: 'left',
     justifyContent: 'left',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+  },
+  headerMenu: {
+    fontSize: 20,
+    color: '#000',
+    fontWeight: 'light',
+    justifyContent: 'flex-end',
+    textDecorationLine: 1,
   },
   headerTitle: {
     fontSize: 24,
