@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, TextInput, Modal, Button, Dimensions, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Modal, Button, Dimensions, ScrollView, Alert } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 import { BarChart } from 'react-native-chart-kit';
 import styles from './DailyLogsStyles';
@@ -14,12 +14,12 @@ const DailyLogs = () => {
   const [newDuration, setNewDuration] = useState('');
   const [timeFrame, setTimeFrame] = useState('day');
   const [error, setError] = useState('');
-  const [editLoggedItems, setLoggedItems] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [deleteMode, setDeleteMode] = useState(false);
 
   useEffect(() => {
     const fetchLogs = async () => {
       const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
-      
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
 
@@ -37,7 +37,6 @@ const DailyLogs = () => {
   useEffect(() => {
     const initializeOrUpdateUnloggedTime = async () => {
       const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
-
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
 
@@ -87,13 +86,11 @@ const DailyLogs = () => {
     initializeOrUpdateUnloggedTime();
   }, [app, user.id, activityLogs]);
 
-  const handleDelete = async (id) => {
+  const handleDeleteLog = async (logId) => {
     const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
 
     try {
-      const logToDelete = await realm.findOne({ _id: id });
-
-      await realm.deleteOne({ _id: id });
+      await realm.deleteOne({ _id: logId });
 
       // Update Unlogged Time
       const startOfDay = new Date();
@@ -119,6 +116,7 @@ const DailyLogs = () => {
       }
 
       setRefresh(!refresh);
+      Alert.alert("Success", "Log successfully deleted.");
     } catch (err) {
       console.error("Failed to delete log", err);
     }
@@ -219,7 +217,6 @@ const DailyLogs = () => {
 
   const filterLogs = (logs, timeFrame) => {
     const startDate = getStartDate(timeFrame);
-
     return logs.filter(log => new Date(log.timestamp) >= startDate);
   };
 
@@ -265,8 +262,14 @@ const DailyLogs = () => {
     }
   };
 
-  const toggleeditLoggedItems = () => {
-    setLoggedItems(!editLoggedItems);
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+    setDeleteMode(false);
+  };
+
+  const toggleDeleteMode = () => {
+    setDeleteMode(!deleteMode);
+    setEditMode(false);
   };
 
   return (
@@ -319,26 +322,35 @@ const DailyLogs = () => {
         }}
         fromZero={true}
       />
+      <View style={styles.controlButtons}>
+        <TouchableOpacity style={styles.deleteToggle} onPress={toggleDeleteMode}>
+          <Text style={styles.deleteToggleText}>{deleteMode ? 'Confirm Delete' : 'Delete Logs'}</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={activityLogs}
         keyExtractor={item => item._id.toString()}
         renderItem={({ item }) => (
-          <View style={[styles.item, item.isGood ? styles.goodItem : styles.badItem]}>
+          <TouchableOpacity
+            style={[
+              styles.item,
+              item.isGood ? styles.goodItem : styles.badItem,
+              deleteMode && styles.selectedItem
+            ]}
+            onPress={() => deleteMode ? handleDeleteLog(item._id) : handleEdit(item)}
+          >
             <View style={styles.itemContent}>
               <Text style={styles.itemEmoji}>{item.title}</Text>
               <Text style={styles.itemText2}> | {item.description}</Text>
               <Text style={styles.itemText2}> | {item.duration} hrs</Text>
-              <Text style={styles.itemText2}> | {item.isGood ? 'Good' : 'Bad'}</Text>
               <Text style={styles.itemText2}> | {'!'.repeat(item.criticalness)}</Text>
             </View>
-
-            <TouchableOpacity onPress={() => handleEdit(item)}>
-              <Text style={styles.editButton}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleDelete(item._id)}>
-              <Text style={styles.deleteButton}>Delete</Text>
-            </TouchableOpacity>
-          </View>
+            {deleteMode && (
+              <TouchableOpacity onPress={() => handleDeleteLog(item._id)}>
+                <Text style={styles.deleteCheck}>✓</Text>
+              </TouchableOpacity>
+            )}
+          </TouchableOpacity>
         )}
         showsVerticalScrollIndicator={false}
       />

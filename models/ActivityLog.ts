@@ -10,6 +10,7 @@ export class ActivityLog extends Realm.Object {
   timestamp!: Date;
   isGood!: boolean; // Add this field
   criticalness!: number; // Add this field
+  isSelected: boolean = false; // Add isSelected field with default value false
 
   static schema = {
     name: 'ActivityLog',
@@ -24,6 +25,7 @@ export class ActivityLog extends Realm.Object {
       timestamp: 'date',
       isGood: 'bool', // Add this field
       criticalness: 'int', // Add this field
+      isSelected: 'bool', // Add isSelected field to schema
     },
   };
 }

@@ -42,7 +42,7 @@ export default StyleSheet.create({
     width: screenWidth - 32,
     margin: 4,
     padding: 3,
-    borderBottomWidth: .4,
+    borderBottomWidth: 0.4,
     borderBottomColor: 'gray',
     shadowRadius: 2,
     elevation: 4,
@@ -115,5 +115,13 @@ export default StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     marginTop: 4,
+  },
+  selectedItem: {
+    backgroundColor: 'rgba(0, 0, 255, 0.1)', // Light blue background for selected items
+  },
+  deleteCheck: {
+    color: 'blue',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
