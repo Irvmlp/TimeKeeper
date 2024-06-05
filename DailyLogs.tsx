@@ -323,11 +323,13 @@ const DailyLogs = () => {
         data={activityLogs}
         keyExtractor={item => item._id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.item}>
+          <View style={[styles.item, item.isGood ? styles.goodItem : styles.badItem]}>
             <View style={styles.itemContent}>
               <Text style={styles.itemEmoji}>{item.title}</Text>
               <Text style={styles.itemText2}> | {item.description}</Text>
               <Text style={styles.itemText2}> | {item.duration} hrs</Text>
+              <Text style={styles.itemText2}> | {item.isGood ? 'Good' : 'Bad'}</Text>
+              <Text style={styles.itemText2}> | {'!'.repeat(item.criticalness)}</Text>
             </View>
 
             <TouchableOpacity onPress={() => handleEdit(item)}>
@@ -336,8 +338,6 @@ const DailyLogs = () => {
             <TouchableOpacity onPress={() => handleDelete(item._id)}>
               <Text style={styles.deleteButton}>Delete</Text>
             </TouchableOpacity>
-
-            
           </View>
         )}
         showsVerticalScrollIndicator={false}

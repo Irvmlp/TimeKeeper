@@ -1,4 +1,3 @@
-// ActivityLog.ts
 import { Realm } from '@realm/react';
 
 export class ActivityLog extends Realm.Object {
@@ -9,7 +8,8 @@ export class ActivityLog extends Realm.Object {
   duration!: number;
   desiredDuration!: number; // Add this field
   timestamp!: Date;
-  //criticalness!: string;
+  isGood!: boolean; // Add this field
+  criticalness!: number; // Add this field
 
   static schema = {
     name: 'ActivityLog',
@@ -22,7 +22,8 @@ export class ActivityLog extends Realm.Object {
       duration: 'int',
       desiredDuration: 'int', // Add this field
       timestamp: 'date',
-      //criticalness: 'string',
+      isGood: 'bool', // Add this field
+      criticalness: 'int', // Add this field
     },
   };
 }

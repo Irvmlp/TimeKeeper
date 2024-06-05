@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, Switch } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 
 const AddDailyActivity = ({ onAdd }) => {
@@ -7,22 +7,27 @@ const AddDailyActivity = ({ onAdd }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [desiredDuration, setDesiredDuration] = useState('');
+  const [isGood, setIsGood] = useState(false); // New state for isGood
+  const [criticalness, setCriticalness] = useState(''); // New state for criticalness
   const [error, setError] = useState('');
 
   const handleAddData = async () => {
-    if (!title || !description || !desiredDuration) return;
+    if (!title || !description || !desiredDuration || !criticalness) return;
 
     const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("DailyEntries");
 
-    const newEntryDesiredDuration = parseInt(desiredDuration, 10); // Parse desired duration
+    const newEntryDesiredDuration = parseInt(desiredDuration, 10);
+    const newEntryCriticalness = parseInt(criticalness, 10); // Parse criticalness
 
     const newData = {
       _id: new Realm.BSON.ObjectId(),
       userId: user.id,
       title,
       description,
-      desiredDuration: newEntryDesiredDuration, // Include desired duration
+      desiredDuration: newEntryDesiredDuration,
       timestamp: new Date(),
+      isGood, // Include isGood
+      criticalness: newEntryCriticalness, // Include criticalness
     };
 
     try {
@@ -30,7 +35,9 @@ const AddDailyActivity = ({ onAdd }) => {
       onAdd();
       setTitle('');
       setDescription('');
-      setDesiredDuration(''); // Reset desired duration
+      setDesiredDuration('');
+      setIsGood(false);
+      setCriticalness('');
       setError('');
     } catch (err) {
       console.error("Failed to add data", err);
@@ -59,12 +66,25 @@ const AddDailyActivity = ({ onAdd }) => {
         onChangeText={setDesiredDuration}
         keyboardType="numeric"
       />
+      <View style={styles.switchContainer}>
+        <Text>Good Activity</Text>
+        <Switch
+          value={isGood}
+          onValueChange={setIsGood}
+        />
+      </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Criticalness (1-4)"
+        value={criticalness}
+        onChangeText={setCriticalness}
+        keyboardType="numeric"
+      />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <Button title="Add Data" onPress={handleAddData} />
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -77,6 +97,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 8,
     backgroundColor: 'white',
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   errorText: {
     color: 'red',

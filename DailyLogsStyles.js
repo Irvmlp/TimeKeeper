@@ -1,4 +1,3 @@
-// DailyLogsStyles.js
 import { StyleSheet, Dimensions } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
@@ -43,11 +42,16 @@ export default StyleSheet.create({
     width: screenWidth - 32,
     margin: 4,
     padding: 3,
-    borderBottomWidth: .4,        // Add this line
-    borderBottomColor: 'gray',  // Add this line
+    borderBottomWidth: .4,
+    borderBottomColor: 'gray',
     shadowRadius: 2,
     elevation: 4,
-    
+  },
+  goodItem: {
+    backgroundColor: 'lightgreen',
+  },
+  badItem: {
+    backgroundColor: 'lightcoral',
   },
   itemContent: {
     flex: 1,

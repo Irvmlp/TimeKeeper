@@ -96,7 +96,7 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
         try {
           await realm.updateOne(
             { _id: existingLog._id },
-            { $set: { duration: existingLog.duration + newLogDuration } }
+            { $set: { duration: existingLog.duration + newLogDuration, isGood: selectedActivity.isGood, criticalness: selectedActivity.criticalness } }
           );
 
           const unloggedTimeLog = await realm.findOne({
@@ -126,6 +126,8 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
           description: selectedActivity.description,
           duration: newLogDuration,
           timestamp: new Date(),
+          isGood: selectedActivity.isGood, // Include isGood
+          criticalness: selectedActivity.criticalness, // Include criticalness
         };
 
         try {
