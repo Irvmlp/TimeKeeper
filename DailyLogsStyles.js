@@ -53,6 +53,9 @@ export default StyleSheet.create({
   badItem: {
     backgroundColor: 'lightcoral',
   },
+  unloggedTimeItem: {
+    backgroundColor: 'lightgray',
+  },
   itemContent: {
     flex: 1,
     gap: 6,
@@ -123,5 +126,32 @@ export default StyleSheet.create({
     color: 'blue',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  controlButtons: {
+    flexDirection: 'row',
+    gap: 2, 
+  },
+  sortButton: {
+    backgroundColor: 'gray',
+    padding: 8,
+    borderRadius: 4,
+    margin: 4,
+  },
+  selectedButton: {
+    backgroundColor: '#87CEFA', // Light blue for selected button
+  },
+  buttonText: {
+    fontSize: 12,
+    color: 'white',
+  },
+  deleteToggle: {
+    backgroundColor: 'gray',
+    padding: 8,
+    borderRadius: 4,
+    margin: 4,
+  },
+  deleteToggleText: {
+    color: 'white',
+    fontSize: 12,
   },
 });

@@ -8,7 +8,8 @@ const Dashboard = () => {
   const [showAddActivity, setShowAddActivity] = useState(false);
   const [editActivities, setEditActivities] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [selectedLogs, setSelectedLogs] = useState([]);
+  const [sortOrder, setSortOrder] = useState('chronological');
+  const [deleteMode, setDeleteMode] = useState(false);  // Add this line
 
   const handleRefresh = () => {
     setRefresh(!refresh);
@@ -22,62 +23,15 @@ const Dashboard = () => {
     setEditActivities(!editActivities);
   };
 
-  const toggleSelectLog = (id) => {
-    setSelectedLogs((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((logId) => logId !== id)
-        : [...prevSelected, id]
-    );
-  };
-
-  const handleDelete = async () => {
-    const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
-
-    try {
-      for (const id of selectedLogs) {
-        await realm.deleteOne({ _id: id });
-      }
-
-      // Update Unlogged Time
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-
-      const totalLoggedTime = (await realm.aggregate([
-        { $match: { userId: user.id, timestamp: { $gte: startOfDay }, title: { $ne: "🕒" } } },
-        { $group: { _id: null, total: { $sum: "$duration" } } }
-      ])).reduce((sum, log) => sum + log.total, 0);
-
-      const unloggedTimeLog = await realm.findOne({
-        userId: user.id,
-        timestamp: { $gte: startOfDay },
-        title: "🕒"
-      });
-
-      if (unloggedTimeLog) {
-        const updatedUnloggedTimeDuration = 24 - totalLoggedTime;
-        await realm.updateOne(
-          { _id: unloggedTimeLog._id },
-          { $set: { duration: updatedUnloggedTimeDuration } }
-        );
-      }
-
-      setRefresh(!refresh);
-      setSelectedLogs([]);
-      setEditActivities(false);
-    } catch (err) {
-      console.error("Failed to delete log", err);
-    }
-  };
-
   const renderHeader = () => (
     <>
       <View style={styles.logsContainer}>
         <DailyLogs
           key={`log-${refresh}`}
-          deleteMode={editActivities}
-          selectedLogs={selectedLogs}
-          toggleSelectLog={toggleSelectLog}
-          handleDelete={handleDelete}
+          deleteMode={deleteMode}  // Add this line
+          setDeleteMode={setDeleteMode}  // Add this line
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
         />
       </View>
     </>
@@ -188,6 +142,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontFamily: 'bold',
+  },
+  sortButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 8,
+  },
+  sortButton: {
+    marginHorizontal: 4,
+    padding: 8,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 4,
   },
 });
 

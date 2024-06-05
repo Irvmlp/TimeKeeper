@@ -6,7 +6,7 @@ import styles from './DailyLogsStyles';
 
 const screenWidth = Dimensions.get('window').width;
 
-const DailyLogs = () => {
+const DailyLogs = ({ deleteMode, sortOrder, setSortOrder }) => {
   const { user, app } = useContext(RealmContext);
   const [activityLogs, setActivityLogs] = useState([]);
   const [refresh, setRefresh] = useState(false);
@@ -15,7 +15,6 @@ const DailyLogs = () => {
   const [timeFrame, setTimeFrame] = useState('day');
   const [error, setError] = useState('');
   const [editMode, setEditMode] = useState(false);
-  const [deleteMode, setDeleteMode] = useState(false);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -181,6 +180,20 @@ const DailyLogs = () => {
     setNewDuration('');
   };
 
+  const sortLogs = (logs, order) => {
+    if (order === 'chronological') {
+      return logs;
+    } else if (order === 'duration') {
+      return logs.sort((a, b) => b.duration - a.duration);
+    } else if (order === 'goodBad') {
+      const goodLogs = logs.filter(log => log.isGood).sort((a, b) => b.duration - a.duration);
+      const badLogs = logs.filter(log => !log.isGood).sort((a, b) => b.duration - a.duration);
+      return [...goodLogs, ...badLogs];
+    }
+  };
+
+  const sortedLogs = sortLogs([...activityLogs], sortOrder);
+
   const getStartDate = (timeFrame) => {
     const now = new Date();
     let startDate;
@@ -323,18 +336,51 @@ const DailyLogs = () => {
         fromZero={true}
       />
       <View style={styles.controlButtons}>
-        <TouchableOpacity style={styles.deleteToggle} onPress={toggleDeleteMode}>
+        <TouchableOpacity 
+          style={[
+            styles.sortButton, 
+            sortOrder === 'chronological' && styles.selectedButton
+          ]} 
+          onPress={() => setSortOrder('chronological')}
+        >
+          <Text style={styles.buttonText}>Chronological</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.sortButton, 
+            sortOrder === 'duration' && styles.selectedButton
+          ]} 
+          onPress={() => setSortOrder('duration')}
+        >
+          <Text style={styles.buttonText}>By Duration</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.sortButton, 
+            sortOrder === 'goodBad' && styles.selectedButton
+          ]} 
+          onPress={() => setSortOrder('goodBad')}
+        >
+          <Text style={styles.buttonText}>Good/Bad</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.deleteToggle, 
+            deleteMode && styles.selectedButton
+          ]} 
+          onPress={toggleDeleteMode}
+        >
           <Text style={styles.deleteToggleText}>{deleteMode ? 'Confirm Delete' : 'Delete Logs'}</Text>
         </TouchableOpacity>
       </View>
       <FlatList
-        data={activityLogs}
+        data={sortedLogs}
         keyExtractor={item => item._id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={[
               styles.item,
-              item.isGood ? styles.goodItem : styles.badItem,
+              item.title === "🕒" ? styles.unloggedTimeItem : item.isGood ? styles.goodItem : styles.badItem,
               deleteMode && styles.selectedItem
             ]}
             onPress={() => deleteMode ? handleDeleteLog(item._id) : handleEdit(item)}
