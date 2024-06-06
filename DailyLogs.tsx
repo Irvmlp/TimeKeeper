@@ -1,8 +1,8 @@
+// DailyLogs.js
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Modal, Button, Dimensions, ScrollView, Alert } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 import { BarChart } from 'react-native-chart-kit';
-import { getFromCache, setToCache } from './cache';
 import styles from './DailyLogsStyles';
 
 const screenWidth = Dimensions.get('window').width;
@@ -19,14 +19,6 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
 
   useEffect(() => {
     const fetchLogs = async () => {
-      const cacheKey = `logs-${user.id}-${timeFrame}`;
-      const cachedLogs = getFromCache(cacheKey);
-
-      if (cachedLogs) {
-        setActivityLogs(cachedLogs);
-        return;
-      }
-
       const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
@@ -34,14 +26,13 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
       try {
         const result = await realm.find({ userId: user.id, timestamp: { $gte: startOfDay } });
         setActivityLogs(result);
-        setToCache(cacheKey, result); // Cache the logs
       } catch (err) {
         console.error("Failed to fetch logs", err);
       }
     };
 
     fetchLogs();
-  }, [refresh, app, user.id, timeFrame]);
+  }, [refresh, app]);
 
   useEffect(() => {
     const initializeOrUpdateUnloggedTime = async () => {
@@ -142,31 +133,31 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
       alert('Duration must be between 0 and 12 hours.');
       return;
     }
-  
+
     const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
-  
+
     const totalLoggedTime = (await realm.aggregate([
       { $match: { userId: user.id, timestamp: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }, title: { $ne: "🕒" } } },
       { $group: { _id: null, total: { $sum: "$duration" } } }
     ])).reduce((sum, log) => sum + log.total, 0) - editingLog.duration + duration;
-  
+
     if (totalLoggedTime > 24) {
       setError('Total logged time exceeds 24 hours.');
       return;
     }
-  
+
     try {
       await realm.updateOne(
         { _id: editingLog._id },
         { $set: { duration: duration } }
       );
-  
+
       const unloggedTimeLog = await realm.findOne({
         userId: user.id,
         timestamp: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) },
         title: "🕒"
       });
-  
+
       if (unloggedTimeLog) {
         const updatedUnloggedTimeDuration = 24 - totalLoggedTime;
         await realm.updateOne(
@@ -174,14 +165,14 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
           { $set: { duration: updatedUnloggedTimeDuration } }
         );
       }
-  
+
       setEditingLog(null);
-      setRefresh(!refresh); // Trigger refresh after saving edit
+      setRefresh(!refresh);
     } catch (err) {
       console.error("Failed to update log", err);
     }
   };
-  
+
   const handleCancelEdit = () => {
     setEditingLog(null);
     setNewDuration('');
@@ -305,44 +296,43 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
           </TouchableOpacity>
         ))}
       </View>
-      <View style={styles.chartContainer}>
-        <BarChart
-          data={chartData}
-          width={screenWidth - 26}
-          height={220}
-          yAxisSuffix=" hrs"
-          yAxisInterval={0.5}
-          chartConfig={{
-            barPercentage: 0.3,
-            backgroundColor: "#F0F4F8",
-            backgroundGradientFrom: "#F0F4F8",
-            backgroundGradientTo: "#F0F4F8",
-            decimalPlaces: 1,
-            color: (opacity = 1) => `rgba(55, 81, 95, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 3,
-            },
-            propsForDots: {
-              r: "2",
-              strokeWidth: ".5",
-              stroke: "red"
-            },
-            propsForBackgroundLines: {
-              stroke: "black",
-            },
-            propsForLabels: {
-              fontSize: 14,
-              fontWeight: "500",
-            },
-          }}
-          style={{
-            borderRadius: 4,
-          }}
-          fromZero={true}
-        />
-      </View>
-
+      <BarChart
+        data={chartData}
+        width={screenWidth - 26}
+        height={220}
+        yAxisSuffix=" hrs"
+        yAxisInterval={.5}
+        chartConfig={{
+          barPercentage: .3,
+          backgroundColor:"#white",
+          backgroundGradientFrom: "white",
+          backgroundGradientTo: "white",
+          decimalPlaces: 1,
+          color: (opacity = 1) => `rgba(55, 81, 95, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          style: {
+            borderRadius: 3,
+          },
+          propsForDots: {
+            r: "2",
+            strokeWidth: ".5",
+            stroke: "black"
+          },
+          propsForBackgroundLines: {
+            stroke: "white",
+          },
+          propsForLabels: {
+            fontSize: "14",
+            fontWeight: 500,
+            padding: 2,
+        },
+        }}
+        style={{
+          borderRadius: 4,
+          marginTop: -10,
+        }}
+        fromZero={true}
+      />
       <View style={styles.controlButtons}>
         <TouchableOpacity 
           style={[
@@ -351,10 +341,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
           ]} 
           onPress={() => setSortOrder('chronological')}
         >
-          <Text style={[
-            styles.buttonText,
-            sortOrder === 'chronological' ? styles.selectedText : null
-          ]}>Chronological</Text>
+          <Text style={styles.buttonText}>Chronological</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -363,10 +350,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
           ]} 
           onPress={() => setSortOrder('duration')}
         >
-          <Text style={[
-            styles.buttonText,
-            sortOrder === 'duration' ? styles.selectedText : null
-          ]}>By Duration</Text>
+          <Text style={styles.buttonText}>By Duration</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -375,10 +359,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
           ]} 
           onPress={() => setSortOrder('goodBad')}
         >
-          <Text style={[
-            styles.buttonText,
-            sortOrder === 'goodBad' ? styles.selectedText : null
-          ]}>Good/Bad</Text>
+          <Text style={styles.buttonText}>Good/Bad</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -387,12 +368,9 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
           ]} 
           onPress={toggleDeleteMode}
         >
-          <Text style={styles.deleteToggleText}>
-            {deleteMode ? 'Confirm Delete' : 'Delete Logs'}
-          </Text>
+          <Text style={styles.deleteToggleText}>{deleteMode ? 'Confirm Delete' : 'Delete Logs'}</Text>
         </TouchableOpacity>
       </View>
-
       <FlatList
         data={sortedLogs}
         keyExtractor={item => item._id.toString()}
@@ -413,7 +391,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
             </View>
             {deleteMode && (
               <TouchableOpacity onPress={() => handleDeleteLog(item._id)}>
-                <Text style={styles.deleteCheck}>X</Text>
+                <Text style={styles.deleteCheck}>✓</Text>
               </TouchableOpacity>
             )}
           </TouchableOpacity>

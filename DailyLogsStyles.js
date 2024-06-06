@@ -52,12 +52,12 @@ export default StyleSheet.create({
   },
   goodItem: {
     backgroundColor: 'lightgreen',
-    backgroundColor: '#F0F4F8',
+    /* backgroundColor: '#F0F4F8', */
     borderColor: '#E0E4ED',
   },
   badItem: {
     backgroundColor: 'lightcoral',
-    backgroundColor: '#F0F4F8',
+    /* backgroundColor: '#F0F4F8', */
     borderColor: '#E0E4ED',
   },
   unloggedTimeItem: {

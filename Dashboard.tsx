@@ -21,7 +21,7 @@ const Dashboard = () => {
     if (user) {
       const getData = async () => {
         try {
-          const result = await fetchData(user.id); // Use the user ID as the dynamic ID
+          const result = await fetchData(user.id);
           setData(result);
         } catch (err) {
           setError(err.message);
@@ -47,19 +47,17 @@ const Dashboard = () => {
   };
 
   const renderHeader = () => (
-    <>
-      <View style={styles.logsContainer}>
-        <DailyLogs
-          key={`log-${refresh}`}
-          deleteMode={deleteMode}
-          setDeleteMode={setDeleteMode}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          refresh={refresh}
-          setRefresh={setRefresh}
-        />
-      </View>
-    </>
+    <View style={styles.logsContainer}>
+      <DailyLogs
+        key={`log-${refresh}`}
+        deleteMode={deleteMode}
+        setDeleteMode={setDeleteMode}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
+    </View>
   );
 
   const renderFooter = () => (
@@ -107,7 +105,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 0,
-    paddingBottom: 150, // Space for the fixed bottom container
+    paddingBottom: 150,
   },
   title: {
     fontSize: 24,
