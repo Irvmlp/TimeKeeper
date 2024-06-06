@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
+import { RealmContext } from './RealmWrapper';
 import AllDailyActivities from './AllDailyActivities';
 import AddDailyActivity from './AddDailyActivities';
 import DailyLogs from './DailyLogs';
 
 const Dashboard = () => {
+  const { user } = useContext(RealmContext);
   const [showAddActivity, setShowAddActivity] = useState(false);
   const [editActivities, setEditActivities] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [sortOrder, setSortOrder] = useState('chronological');
-  const [deleteMode, setDeleteMode] = useState(false);  // Add this line
+  const [deleteMode, setDeleteMode] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      console.log("User ID in Dashboard:", user.id);
+    }
+  }, [user]);
 
   const handleRefresh = () => {
     setRefresh(!refresh);
@@ -28,8 +36,8 @@ const Dashboard = () => {
       <View style={styles.logsContainer}>
         <DailyLogs
           key={`log-${refresh}`}
-          deleteMode={deleteMode}  // Add this line
-          setDeleteMode={setDeleteMode}  // Add this line
+          deleteMode={deleteMode}
+          setDeleteMode={setDeleteMode}
           sortOrder={sortOrder}
           setSortOrder={setSortOrder}
         />

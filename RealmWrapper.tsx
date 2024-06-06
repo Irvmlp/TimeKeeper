@@ -1,8 +1,9 @@
+// RealmWrapper.js
 import React, { createContext, useState, useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { App, Credentials } from 'realm';
 
-const appId = "application-0-csflppd";
+const appId = "application-0-csflppd"; // Replace with your Realm App ID
 const app = new App({ id: appId });
 
 export const RealmContext = createContext({ user: null, app, setUser: () => {} });
@@ -42,7 +43,5 @@ const RealmWrapper = ({ children }) => {
     </RealmContext.Provider>
   );
 };
-
-
 
 export default RealmWrapper;
