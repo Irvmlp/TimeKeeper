@@ -1,3 +1,4 @@
+// DailyLogs.js
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Modal, Button, Dimensions, ScrollView, Alert } from 'react-native';
 import { RealmContext } from './RealmWrapper';
@@ -6,7 +7,7 @@ import styles from './DailyLogsStyles';
 
 const screenWidth = Dimensions.get('window').width;
 
-const DailyLogs = ({ deleteMode, sortOrder, setSortOrder }) => {
+const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
   const { user, app } = useContext(RealmContext);
   const [activityLogs, setActivityLogs] = useState([]);
   const [refresh, setRefresh] = useState(false);
@@ -91,7 +92,6 @@ const DailyLogs = ({ deleteMode, sortOrder, setSortOrder }) => {
     try {
       await realm.deleteOne({ _id: logId });
 
-      // Update Unlogged Time
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
 
@@ -136,7 +136,6 @@ const DailyLogs = ({ deleteMode, sortOrder, setSortOrder }) => {
 
     const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
 
-    // Calculate new total logged time excluding the old duration of the editing log
     const totalLoggedTime = (await realm.aggregate([
       { $match: { userId: user.id, timestamp: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }, title: { $ne: "🕒" } } },
       { $group: { _id: null, total: { $sum: "$duration" } } }
@@ -153,7 +152,6 @@ const DailyLogs = ({ deleteMode, sortOrder, setSortOrder }) => {
         { $set: { duration: duration } }
       );
 
-      // Update Unlogged Time
       const unloggedTimeLog = await realm.findOne({
         userId: user.id,
         timestamp: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) },
