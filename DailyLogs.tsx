@@ -1,4 +1,3 @@
-// DailyLogs.js
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Modal, Button, Dimensions, ScrollView, Alert } from 'react-native';
 import { RealmContext } from './RealmWrapper';
@@ -118,6 +117,18 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
       Alert.alert("Success", "Log successfully deleted.");
     } catch (err) {
       console.error("Failed to delete log", err);
+    }
+  };
+
+  const handleDeleteAllLogs = async () => {
+    const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
+
+    try {
+      await realm.deleteMany({ userId: user.id });
+      setRefresh(!refresh);
+      Alert.alert("Success", "All logs successfully deleted.");
+    } catch (err) {
+      console.error("Failed to delete all logs", err);
     }
   };
 
@@ -301,9 +312,9 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
         width={screenWidth - 26}
         height={220}
         yAxisSuffix=" hrs"
-        yAxisInterval={.5}
+        yAxisInterval={0.5}
         chartConfig={{
-          barPercentage: .3,
+          barPercentage: 0.3,
           backgroundColor:"#white",
           backgroundGradientFrom: "white",
           backgroundGradientTo: "white",
@@ -333,6 +344,15 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
         }}
         fromZero={true}
       />
+      {/* <TouchableOpacity 
+          style={[
+            styles.deleteToggle,
+            styles.deleteAllButton
+          ]}
+          onPress={handleDeleteAllLogs}
+        >
+          <Text style={styles.deleteToggleText}>Delete All Logs</Text>
+        </TouchableOpacity> */}
       <View style={styles.controlButtons}>
         <TouchableOpacity 
           style={[
@@ -370,6 +390,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
         >
           <Text style={styles.deleteToggleText}>{deleteMode ? 'Confirm Delete' : 'Delete Logs'}</Text>
         </TouchableOpacity>
+        
       </View>
       <FlatList
         data={sortedLogs}

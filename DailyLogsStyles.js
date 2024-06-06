@@ -39,7 +39,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: screenWidth - 32,
+    width: screenWidth - 26,
     margin: 4,
     padding: 3,
     borderBottomWidth: 0.4,

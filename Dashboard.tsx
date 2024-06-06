@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderTopWidth: 0.4,
     borderTopColor: 'lightblue',
-    bottom: 0,
+    bottom: 10,
     left: 0,
     right: 0,
     backgroundColor: 'white',
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   activitiesContainer: {
     marginBottom: 30,
-    marginHorizontal: 10,
+    marginHorizontal: 0,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -148,6 +148,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
+    backgroundColor: '#F0F4F8',
+    borderColor: '#E0E4ED',
   },
   DeleteButton: {
     alignItems: 'center',
@@ -161,9 +163,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
+    backgroundColor: '#F0F4F8',
+    borderColor: '#E0E4ED',
   },
   buttonText: {
-    color: '#fff',
+    color: '#291F58',
     fontSize: 16,
     fontFamily: 'bold',
   },
