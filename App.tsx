@@ -1,17 +1,22 @@
+// App.js
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 import LoginScreen from './LoginScreen';
 import Dashboard from './Dashboard';
 
-const App = () => {
+const App = ({ navigation }) => {
   const { user } = useContext(RealmContext);
 
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Today</Text>
-        <Text style={styles.headerMenu}>sum</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('App')}>
+          <Text style={styles.headerTitle}>Today</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Summary')}>
+          <Text style={styles.headerMenu}>sum</Text>
+        </TouchableOpacity>
       </View>
       {user ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
