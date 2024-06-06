@@ -15,6 +15,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
   const [timeFrame, setTimeFrame] = useState('day');
   const [error, setError] = useState('');
   const [editMode, setEditMode] = useState(false);
+  const [unloggedTimeInitialized, setUnloggedTimeInitialized] = useState(false);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -65,7 +66,6 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
 
         try {
           await realm.insertOne(unloggedTimeLog);
-          setRefresh(!refresh);
         } catch (err) {
           console.error("Failed to initialize Unlogged Time log", err);
         }
@@ -75,15 +75,18 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
             { _id: existingUnloggedTimeLog._id },
             { $set: { duration: unloggedTimeDuration } }
           );
-          setRefresh(!refresh);
         } catch (err) {
           console.error("Failed to update Unlogged Time log", err);
         }
       }
+
+      setUnloggedTimeInitialized(true);
     };
 
-    initializeOrUpdateUnloggedTime();
-  }, [app, user.id, activityLogs]);
+    if (!unloggedTimeInitialized) {
+      initializeOrUpdateUnloggedTime();
+    }
+  }, [app, user.id, activityLogs, unloggedTimeInitialized]);
 
   const handleDeleteLog = async (logId) => {
     const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
