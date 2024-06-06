@@ -1,8 +1,9 @@
-// DailyLogs.js
+// frontend/DailyLogs.js
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Modal, Button, Dimensions, ScrollView, Alert } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 import { BarChart } from 'react-native-chart-kit';
+import { getFromCache, setToCache } from './cache';
 import styles from './DailyLogsStyles';
 
 const screenWidth = Dimensions.get('window').width;
@@ -19,6 +20,14 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
 
   useEffect(() => {
     const fetchLogs = async () => {
+      const cacheKey = `logs-${user.id}-${timeFrame}`;
+      const cachedLogs = getFromCache(cacheKey);
+
+      if (cachedLogs) {
+        setActivityLogs(cachedLogs);
+        return;
+      }
+
       const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("ActivityLog");
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
@@ -26,13 +35,14 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
       try {
         const result = await realm.find({ userId: user.id, timestamp: { $gte: startOfDay } });
         setActivityLogs(result);
+        setToCache(cacheKey, result); // Cache the logs
       } catch (err) {
         console.error("Failed to fetch logs", err);
       }
     };
 
     fetchLogs();
-  }, [refresh, app]);
+  }, [refresh, app, user.id, timeFrame]);
 
   useEffect(() => {
     const initializeOrUpdateUnloggedTime = async () => {

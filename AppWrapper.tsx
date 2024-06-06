@@ -1,10 +1,9 @@
-// AppWrapper.js
 import React from 'react';
 import RealmWrapper from './RealmWrapper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import App from './App';
-import SummaryScreen from './SummaryScreen'; 
+import SummaryScreen from './SummaryScreen';
 
 const Stack = createNativeStackNavigator();
 

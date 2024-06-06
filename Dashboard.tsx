@@ -4,6 +4,7 @@ import { RealmContext } from './RealmWrapper';
 import AllDailyActivities from './AllDailyActivities';
 import AddDailyActivity from './AddDailyActivities';
 import DailyLogs from './DailyLogs';
+import { fetchData } from './apiService';
 
 const Dashboard = () => {
   const { user } = useContext(RealmContext);
@@ -12,10 +13,24 @@ const Dashboard = () => {
   const [refresh, setRefresh] = useState(false);
   const [sortOrder, setSortOrder] = useState('chronological');
   const [deleteMode, setDeleteMode] = useState(false);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (user) {
-      console.log("User ID in Dashboard:", user.id);
+      const getData = async () => {
+        try {
+          const result = await fetchData(user.id); // Use the user ID as the dynamic ID
+          setData(result);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      getData();
     }
   }, [user]);
 
@@ -78,6 +93,13 @@ const Dashboard = () => {
         contentContainerStyle={styles.scrollContainer}
       />
       {renderFooter()}
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : error ? (
+        <Text>Error: {error}</Text>
+      ) : (
+        <Text>Data: {JSON.stringify(data)}</Text>
+      )}
     </View>
   );
 };

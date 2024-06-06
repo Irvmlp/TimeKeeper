@@ -1,12 +1,32 @@
-// App.js
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 import LoginScreen from './LoginScreen';
 import Dashboard from './Dashboard';
+import { fetchData } from './apiService';
 
 const App = ({ navigation }) => {
   const { user } = useContext(RealmContext);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      if (user) {
+        try {
+          const result = await fetchData(user.id); // Use the user ID as the dynamic ID
+          setData(result);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    getData();
+  }, [user]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -24,6 +44,13 @@ const App = ({ navigation }) => {
         </View>
       ) : (
         <LoginScreen />
+      )}
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : error ? (
+        <Text>Error: {error}</Text>
+      ) : (
+        <Text>Data: {JSON.stringify(data)}</Text>
       )}
     </View>
   );

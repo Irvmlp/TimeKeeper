@@ -1,4 +1,4 @@
-// RealmWrapper.js
+// frontend/RealmWrapper.js
 import React, { createContext, useState, useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { App, Credentials } from 'realm';
@@ -45,3 +45,5 @@ const RealmWrapper = ({ children }) => {
 };
 
 export default RealmWrapper;
+
+

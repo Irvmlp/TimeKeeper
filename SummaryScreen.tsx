@@ -1,7 +1,8 @@
-// SummaryScreen.js
+// frontend/SummaryScreen.js
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
 import { RealmContext } from './RealmWrapper';
+import { getFromCache, setToCache } from './cache';
 import Realm from 'realm';
 
 const SummaryScreen = () => {
@@ -10,12 +11,21 @@ const SummaryScreen = () => {
 
   const fetchSummary = async () => {
     if (user) {
+      const cacheKey = `summary-${user.id}`;
+      const cachedData = getFromCache(cacheKey);
+      
+      if (cachedData) {
+        setSummaryData(cachedData);
+        return;
+      }
+
       console.log("Fetching summaries for user ID:", user.id);
       try {
         const collection = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("DailySummary");
         const result = await collection.find({ userId: user.id });
         console.log("Summaries fetched: ", JSON.stringify(result, null, 2));
         setSummaryData(result);
+        setToCache(cacheKey, result); // Cache the data
       } catch (err) {
         console.error('Failed to fetch summary data', err);
       }
