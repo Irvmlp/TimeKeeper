@@ -46,12 +46,19 @@ export default StyleSheet.create({
     borderBottomColor: 'gray',
     shadowRadius: 2,
     elevation: 4,
+    backgroundColor: '#F0F4F8',
+    borderColor: '#E0E4ED',
+    borderRadius: 4, 
   },
   goodItem: {
     backgroundColor: 'lightgreen',
+    backgroundColor: '#F0F4F8',
+    borderColor: '#E0E4ED',
   },
   badItem: {
     backgroundColor: 'lightcoral',
+    backgroundColor: '#F0F4F8',
+    borderColor: '#E0E4ED',
   },
   unloggedTimeItem: {
     backgroundColor: 'lightgray',
@@ -64,10 +71,10 @@ export default StyleSheet.create({
   itemEmoji: {
     fontSize: 12,
     padding: 3,
-    backgroundColor: 'white',
   },
   itemText2: {
     width: 90,
+    color: '#291F58',
   },
   editButton: {
     color: 'blue',
@@ -132,26 +139,39 @@ export default StyleSheet.create({
     gap: 2, 
   },
   sortButton: {
-    backgroundColor: 'gray',
+    backgroundColor: '#F0F4F8',
     padding: 8,
     borderRadius: 4,
     margin: 4,
+    borderWidth: 1, // Add border width
+    borderColor: '#E0E4ED', // Add border color
   },
   selectedButton: {
-    backgroundColor: '#87CEFA', // Light blue for selected button
+    backgroundColor: '#2E86ED', // Light blue for selected button
+  },
+  selectedText: {
+    color: 'white', // Change text color to white when selected
   },
   buttonText: {
     fontSize: 12,
-    color: 'white',
+    color: '#291F58',
   },
   deleteToggle: {
-    backgroundColor: 'gray',
     padding: 8,
     borderRadius: 4,
     margin: 4,
+    backgroundColor: '#F0F4F8',
+    borderColor: '#E0E4ED',
   },
   deleteToggleText: {
-    color: 'white',
+    color: 'lightred',
     fontSize: 12,
+  },
+  chartContainer: {
+    borderWidth: 1,
+    borderColor: '#E0E4ED',
+    borderRadius: 4,
+    marginBottom: 8, 
+    marginTop: 0, 
   },
 });

@@ -1,6 +1,6 @@
 // frontend/SummaryScreen.js
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 import { getFromCache, setToCache } from './cache';
 import Realm from 'realm';
@@ -9,14 +9,16 @@ const SummaryScreen = () => {
   const { user, app } = useContext(RealmContext);
   const [summaryData, setSummaryData] = useState([]);
 
-  const fetchSummary = async () => {
+  const fetchSummary = async (forceRefresh = false) => {
     if (user) {
       const cacheKey = `summary-${user.id}`;
-      const cachedData = getFromCache(cacheKey);
-      
-      if (cachedData) {
-        setSummaryData(cachedData);
-        return;
+
+      if (!forceRefresh) {
+        const cachedData = getFromCache(cacheKey);
+        if (cachedData) {
+          setSummaryData(cachedData);
+          return;
+        }
       }
 
       console.log("Fetching summaries for user ID:", user.id);
@@ -69,7 +71,7 @@ const SummaryScreen = () => {
         };
 
         await collection.insertOne(exampleEntry);
-        await fetchSummary(); // Fetch the summaries again to reflect the newly inserted entry
+        await fetchSummary(true); // Fetch the summaries again to reflect the newly inserted entry
       } catch (err) {
         console.error('Failed to insert example entry', err);
       }
@@ -81,7 +83,7 @@ const SummaryScreen = () => {
       try {
         const collection = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("DailySummary");
         await collection.deleteMany({ userId: user.id });
-        await fetchSummary(); // Fetch the summaries again to reflect the deletions
+        await fetchSummary(true); // Fetch the summaries again to reflect the deletions
       } catch (err) {
         console.error('Failed to delete entries', err);
       }
@@ -90,9 +92,20 @@ const SummaryScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.headerText}>This is the Summary Screen</Text>
-      <Button title="Insert Example Entry" onPress={insertExampleEntry} />
-      <Button title="Delete All Entries" onPress={deleteAllEntries} />
+      <Text style={styles.headerText}>Summary</Text>
+      <Text style={styles.headerText}>24H</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.insertButton} onPress={insertExampleEntry}>
+          <Text style={styles.buttonText}>Insert Example Entry</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteAllButton} onPress={deleteAllEntries}>
+          <Text style={styles.buttonText}>Delete All Entries</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.refreshButton} onPress={() => fetchSummary(true)}>
+          <Text style={styles.buttonText}>Refresh</Text>
+        </TouchableOpacity>
+      </View>
+     
       {summaryData.length > 0 ? (
         summaryData.map((data, index) => (
           <View key={index} style={styles.summaryContainer}>
@@ -100,10 +113,10 @@ const SummaryScreen = () => {
             <Text style={styles.totalDuration}>Total Duration: {data.totalDuration} hours</Text>
             {data.activities.map((activity, idx) => (
               <View key={idx} style={styles.activityContainer}>
-                <Text style={styles.activityTitle}>Activity: {activity.title}</Text>
-                <Text style={styles.activityDuration}>Duration: {activity.duration} hours</Text>
+                <Text style={styles.activityTitle}>{activity.title}</Text>
+                <Text style={styles.activityDuration}>{activity.duration} hours</Text>
                 <Text style={styles.activityIsGood}>Good: {activity.isGood ? 'Yes' : 'No'}</Text>
-                <Text style={styles.activityCriticalness}>Criticalness: {activity.criticalness}</Text>
+                <Text style={styles.activityCriticalness}>{activity.criticalness}</Text>
               </View>
             ))}
           </View>
@@ -117,47 +130,76 @@ const SummaryScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    flexGrow: 1,
     alignItems: 'center',
+    paddingTop: 20,
+    backgroundColor: 'white',
   },
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  insertButton: {
+    backgroundColor: 'blue',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  deleteAllButton: {
+    backgroundColor: 'red',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  refreshButton: {
+    backgroundColor: 'green',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   summaryContainer: {
-    marginTop: 20,
+    width: '90%',
+    marginBottom: 20,
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    width: '90%',
   },
   summaryDate: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 10,
   },
   totalDuration: {
     fontSize: 16,
+    marginBottom: 10,
   },
   activityContainer: {
-    marginTop: 10,
     padding: 5,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   activityTitle: {
     fontSize: 16,
     fontWeight: 'bold',
   },
-  activityDuration: {
-    fontSize: 14,
-  },
-  activityIsGood: {
-    fontSize: 14,
-  },
-  activityCriticalness: {
+  activityText: {
     fontSize: 14,
   },
   noDataText: {

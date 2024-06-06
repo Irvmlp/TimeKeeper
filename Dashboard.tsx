@@ -55,6 +55,8 @@ const Dashboard = () => {
           setDeleteMode={setDeleteMode}
           sortOrder={sortOrder}
           setSortOrder={setSortOrder}
+          refresh={refresh}
+          setRefresh={setRefresh}
         />
       </View>
     </>
@@ -93,13 +95,6 @@ const Dashboard = () => {
         contentContainerStyle={styles.scrollContainer}
       />
       {renderFooter()}
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : error ? (
-        <Text>Error: {error}</Text>
-      ) : (
-        <Text>Data: {JSON.stringify(data)}</Text>
-      )}
     </View>
   );
 };
@@ -108,6 +103,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
+    backgroundColor: 'white',
   },
   scrollContainer: {
     padding: 0,

@@ -29,7 +29,7 @@ const App = ({ navigation }) => {
   }, [user]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ backgroundColor: 'white' , flex: 1 }}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('App')}>
           <Text style={styles.headerTitle}>Today</Text>
@@ -45,13 +45,13 @@ const App = ({ navigation }) => {
       ) : (
         <LoginScreen />
       )}
-      {loading ? (
+      {/* {loading ? (
         <Text>Loading...</Text>
       ) : error ? (
         <Text>Error: {error}</Text>
       ) : (
         <Text>Data: {JSON.stringify(data)}</Text>
-      )}
+      )} */}
     </View>
   );
 };
@@ -59,6 +59,7 @@ const App = ({ navigation }) => {
 const styles = StyleSheet.create({
   headerContainer: {
     padding: 2,
+    backgroundColor: 'white',
     marginTop: 88,
     marginLeft: 12,
     alignItems: 'left',
@@ -70,6 +71,7 @@ const styles = StyleSheet.create({
   headerMenu: {
     fontSize: 20,
     color: '#000',
+    backgroundColor: 'white',
     fontWeight: 'light',
     justifyContent: 'flex-end',
     textDecorationLine: 1,
@@ -77,6 +79,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     color: '#000',
+    backgroundColor: 'white',
     fontWeight: 'bold',
   },
 });

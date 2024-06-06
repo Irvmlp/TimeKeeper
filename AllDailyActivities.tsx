@@ -5,7 +5,6 @@ import { RealmContext } from './RealmWrapper';
 const AllDailyActivities = ({ editable, onLogActivity }) => {
   const { user, app } = useContext(RealmContext);
   const [dailyData, setDailyData] = useState([]);
-  const [refresh, setRefresh] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [duration, setDuration] = useState(0);
@@ -27,7 +26,7 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
     };
 
     fetchData();
-  }, [refresh, app, user.id]);
+  }, [user.id, app]);
 
   useEffect(() => {
     let timer;
@@ -42,20 +41,14 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
   }, [isTimerActive, startTime]);
 
   const handleDelete = async (id) => {
-    console.log(`Attempting to delete activity with id: ${id}`);
     const realm = app.currentUser.mongoClient("mongodb-atlas").db("DayTracker").collection("DailyEntries");
 
     try {
       const objectId = new Realm.BSON.ObjectId(id);
-      console.log(`Converted id to ObjectId: ${objectId}`);
       const logToDelete = await realm.findOne({ _id: objectId });
-      console.log(`Found log to delete: ${JSON.stringify(logToDelete)}`);
 
       if (logToDelete) {
         await realm.deleteOne({ _id: objectId });
-        console.log(`Successfully deleted log with id: ${id}`);
-
-        setRefresh(!refresh);
         onLogActivity(); // Refresh the list in the parent component
       } else {
         console.error(`Log with id ${id} not found.`);
