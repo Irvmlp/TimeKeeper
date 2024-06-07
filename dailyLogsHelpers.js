@@ -1,48 +1,51 @@
 import React from 'react';
-import { Dimensions, View, TouchableOpacity, Text, Alert } from 'react-native';
+import { Dimensions, View, Text } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 import styles from './DailyLogsStyles';
 
 const screenWidth = Dimensions.get('window').width;
 
 export const Chart = ({ chartData }) => (
-  <BarChart
-    data={chartData}
-    width={screenWidth - 26}
-    height={220}
-    yAxisSuffix=" hrs"
-    yAxisInterval={0.5}
-    chartConfig={{
-      barPercentage: 0.5,
-      backgroundColor: "white",
-      backgroundGradientFrom: "white",
-      backgroundGradientTo: "white",
-      decimalPlaces: 1,
-      color: (opacity = 1) => `rgba(55, 81, 95, ${opacity})`,
-      labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-      style: {
-        borderRadius: 3,
-      },
-      propsForDots: {
-        r: "2",
-        strokeWidth: ".5",
-        stroke: "black"
-      },
-      propsForBackgroundLines: {
-        stroke: "white",
-      },
-      propsForLabels: {
-        fontSize: "14",
-        fontWeight: 500,
-        padding: 2,
-      },
-    }}
-    style={{
-      borderRadius: 4,
-      marginTop: -10,
-    }}
-    fromZero={true}
-  />
+  <View style={styles.chartContainer}>
+    <BarChart
+      data={chartData}
+      width={screenWidth - 32}
+      height={190}
+      yAxisSuffix=" hrs"
+      yAxisInterval={0.5}
+      chartConfig={{
+        barPercentage: 0.6,
+        backgroundColor: "#f4f4f8",
+        backgroundGradientFrom: "#f4f4f8",
+        backgroundGradientTo: "#f4f4f8",
+        decimalPlaces: 1,
+        color: (opacity = 1) => `rgba(34, 128, 176, ${opacity})`,
+        labelColor: (opacity = 1) => `rgba(34, 128, 176, ${opacity})`,
+        style: {
+          borderRadius: 16,
+        },
+        propsForDots: {
+          r: "4",
+          strokeWidth: "1",
+          stroke: "#1f77b4",
+        },
+        propsForBackgroundLines: {
+          stroke: "#e3e3e3",
+        },
+        propsForLabels: {
+          fontSize: 12,
+          fontWeight: "bold",
+          padding: 4,
+        },
+      }}
+      style={{
+        borderRadius: 16,
+        marginVertical: 2,
+        marginHorizontal: 8,
+      }}
+      fromZero={true}
+    />
+  </View>
 );
 
 export const getStartDate = (timeFrame) => {

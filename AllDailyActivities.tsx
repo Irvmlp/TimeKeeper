@@ -120,8 +120,8 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
           description: selectedActivity.description,
           duration: newLogDuration,
           timestamp: new Date(),
-          isGood: selectedActivity.isGood, // Include isGood
-          criticalness: selectedActivity.criticalness, // Include criticalness
+          isGood: selectedActivity.isGood,
+          criticalness: selectedActivity.criticalness,
         };
 
         try {
@@ -168,8 +168,8 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
     }
   };
 
-  const increaseDuration = () => setDuration((prev) => Math.min(prev + 0.5, 24));
-  const decreaseDuration = () => setDuration((prev) => Math.max(prev - 0.5, 0));
+  const increaseDuration = () => setDuration((prev) => Math.min(prev + 0.25, 24));
+  const decreaseDuration = () => setDuration((prev) => Math.max(prev - 0.25, 0));
 
   const formatElapsedTime = (seconds) => {
     const hrs = Math.floor(seconds / 3600);
@@ -180,13 +180,18 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
 
   const renderModalContent = () => (
     <View style={styles.modalContent}>
-      <Text style={styles.modalTitle}>Select Duration:</Text>
+      <Text style={styles.modalTitle}>{selectedActivity?.title}</Text>
+      <Text style={styles.modalSubtitle}>Select Duration:</Text>
       <View style={styles.durationRow}>
-        <Button title="-" onPress={decreaseDuration} />
-        <Text style={styles.durationText}>{duration.toFixed(1)} hours</Text>
-        <Button title="+" onPress={increaseDuration} />
+        <TouchableOpacity style={styles.adjustButton} onPress={decreaseDuration}>
+          <Text style={styles.adjustButtonText}>-</Text>
+        </TouchableOpacity>
+        <Text style={styles.durationText}>{duration.toFixed(2)} hours</Text>
+        <TouchableOpacity style={styles.adjustButton} onPress={increaseDuration}>
+          <Text style={styles.adjustButtonText}>+</Text>
+        </TouchableOpacity>
       </View>
-      <Button title={`Log ${duration.toFixed(1)} hours`} onPress={handleLogActivity} />
+      <Button title={`Log ${duration.toFixed(2)} hours`} onPress={handleLogActivity} />
       {isTimerActive ? (
         <>
           <Text style={styles.timerText}>{formatElapsedTime(elapsedTime)}</Text>
@@ -200,26 +205,42 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
     </View>
   );
 
+  const chunkArray = (array, size) => {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  };
+
+  const rowsData = chunkArray(dailyData, 8);
+
   return (
     <View>
-      <FlatList
-        data={dailyData}
-        keyExtractor={item => item._id.toString()}
-        renderItem={({ item }) => (
-          <View>
-            <TouchableOpacity style={styles.item} onPress={() => handleItemPress(item)}>
-              <Text style={styles.itemText}>{item.title}</Text>
-              {editable && (
-                <TouchableOpacity onPress={() => handleDelete(item._id.toString())}>
-                  <Text style={styles.deleteButton}>Delete</Text>
+      {rowsData.map((row, index) => (
+        <View key={index} style={styles.row}>
+          <FlatList
+            data={row}
+            keyExtractor={item => item._id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.itemContainer}>
+                <TouchableOpacity style={styles.item} onPress={() => handleItemPress(item)}>
+                  <View style={styles.itemTextContainer}>
+                    <Text style={styles.itemTitle}>{item.title}</Text>
+                  </View>
+                  {editable && (
+                    <TouchableOpacity onPress={() => handleDelete(item._id.toString())}>
+                      <Text style={styles.deleteButton}>Delete</Text>
+                    </TouchableOpacity>
+                  )}
                 </TouchableOpacity>
-              )}
-            </TouchableOpacity>
-          </View>
-        )}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
+              </View>
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+      ))}
       <Modal visible={showModal} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
           {renderModalContent()}

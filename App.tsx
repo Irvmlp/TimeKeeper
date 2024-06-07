@@ -35,7 +35,7 @@ const App = ({ navigation }) => {
           <Text style={styles.headerTitle}>Today</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Summary')}>
-          <Text style={styles.headerMenu}>sum</Text>
+          <Text style={styles.headerMenu}>Report</Text>
         </TouchableOpacity>
       </View>
       {user ? (

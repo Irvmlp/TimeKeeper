@@ -62,26 +62,29 @@ const Dashboard = () => {
 
   const renderFooter = () => (
     <View style={styles.footerContainer}>
-      <View style={styles.buttonRow}>
+    
+    <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.DeleteButton} onPress={toggleEditActivities}>
-          <Text style={styles.buttonText}>{editActivities ? "✓" : "Delete"}</Text>
+          <Text style={styles.buttonText}>{editActivities ? "✓" : "-"}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.Addbutton} onPress={toggleAddActivity}>
-          <Text style={styles.buttonText}>{showAddActivity ? "✓" : "Add"}</Text>
+        <TouchableOpacity style={styles.AddButton} onPress={toggleAddActivity}>
+          <Text style={styles.buttonText}>{showAddActivity ? "✓" : "+"}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.activityContainer}>
-        {showAddActivity && <AddDailyActivity onAdd={handleRefresh} />}
-        <View style={styles.activitiesContainer}>
-          <AllDailyActivities
-            key={refresh}
-            editable={editActivities}
-            onLogActivity={handleRefresh}
-          />
-        </View>
+      {showAddActivity && <AddDailyActivity onAdd={handleRefresh} />}
+      <View style={styles.activitiesContainer}>
+        <AllDailyActivities
+          key={`${refresh}-${editActivities}`} // Changing the key to force re-render
+          editable={editActivities}
+          onLogActivity={handleRefresh}
+        />
       </View>
     </View>
+    
+    </View>
+
   );
 
   return (
@@ -92,6 +95,7 @@ const Dashboard = () => {
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.scrollContainer}
       />
+      
       {renderFooter()}
     </View>
   );
@@ -118,25 +122,25 @@ const styles = StyleSheet.create({
   footerContainer: {
     position: 'absolute',
     borderTopWidth: 0.4,
-    borderTopColor: 'lightblue',
-    bottom: 10,
+    borderTopColor: 'white',
+    bottom: 19,
     left: 0,
     right: 0,
     backgroundColor: 'white',
   },
   activityContainer: {
-    padding: 8,
+    padding: 4,
   },
   activitiesContainer: {
-    marginBottom: 30,
+    marginBottom: 10,
     marginHorizontal: 0,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 10,
+    marginHorizontal: 12,
   },
-  Addbutton: {
+  AddButton: {
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 2,
@@ -148,7 +152,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    backgroundColor: '#F0F4F8',
+    backgroundColor: 'white',
     borderColor: '#E0E4ED',
   },
   DeleteButton: {
@@ -163,7 +167,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    backgroundColor: '#F0F4F8',
+    backgroundColor: 'white',
     borderColor: '#E0E4ED',
   },
   buttonText: {
@@ -185,3 +189,5 @@ const styles = StyleSheet.create({
 });
 
 export default Dashboard;
+
+

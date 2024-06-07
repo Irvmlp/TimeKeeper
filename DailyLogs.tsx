@@ -10,6 +10,7 @@ import ActivityList from './ActivityList';
 const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
   const { user, app } = useContext(RealmContext);
   const [activityLogs, setActivityLogs] = useState([]);
+  const [freeTimeLog, setFreeTimeLog] = useState(null);
   const [refresh, setRefresh] = useState(false);
   const [editingLog, setEditingLog] = useState(null);
   const [newDuration, setNewDuration] = useState('');
@@ -26,7 +27,9 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
 
       try {
         const result = await realm.find({ userId: user.id, timestamp: { $gte: startOfDay } });
-        setActivityLogs(result);
+        const freeTime = result.find(log => log.title === "🕒");
+        setFreeTimeLog(freeTime);
+        setActivityLogs(result.filter(log => log.title !== "🕒"));
       } catch (err) {
         console.error("Failed to fetch logs", err);
       }
@@ -67,6 +70,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
 
         try {
           await realm.insertOne(unloggedTimeLog);
+          setFreeTimeLog(unloggedTimeLog);
         } catch (err) {
           console.error("Failed to initialize Unlogged Time log", err);
         }
@@ -76,6 +80,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
             { _id: existingUnloggedTimeLog._id },
             { $set: { duration: unloggedTimeDuration } }
           );
+          setFreeTimeLog(existingUnloggedTimeLog);
         } catch (err) {
           console.error("Failed to update Unlogged Time log", err);
         }
@@ -115,6 +120,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
           { _id: unloggedTimeLog._id },
           { $set: { duration: updatedUnloggedTimeDuration } }
         );
+        setFreeTimeLog(unloggedTimeLog);
       }
 
       setRefresh(!refresh);
@@ -167,6 +173,7 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
           { _id: unloggedTimeLog._id },
           { $set: { duration: updatedUnloggedTimeDuration } }
         );
+        setFreeTimeLog(unloggedTimeLog);
       }
 
       setEditingLog(null);
@@ -198,9 +205,11 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
     setEditMode(false);
   };
 
+  const goodLogs = activityLogs.filter(log => log.isGood);
+  const badLogs = activityLogs.filter(log => !log.isGood);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      
       <Chart chartData={chartData} />
       <SortButtons
         sortOrder={sortOrder}
@@ -208,13 +217,43 @@ const DailyLogs = ({ deleteMode, setDeleteMode, sortOrder, setSortOrder }) => {
         deleteMode={deleteMode}
         toggleDeleteMode={toggleDeleteMode}
       />
-      <ActivityList
-        activityLogs={sortLogs([...activityLogs], sortOrder)}
-        sortOrder={sortOrder}
-        handleDeleteLog={handleDeleteLog}
-        handleEdit={handleEdit}
-        deleteMode={deleteMode}
-      />
+      {freeTimeLog && (
+        <View style={[styles.item, styles.unloggedTimeItem]}>
+          <View style={styles.itemContent}>
+            <Text style={styles.itemEmoji}>{freeTimeLog.title}</Text>
+            <Text style={styles.itemText2}>{freeTimeLog.description}</Text>
+            <Text style={styles.itemText2}>{freeTimeLog.duration} hrs</Text>
+          </View>
+        </View>
+      )}
+      {sortOrder === 'goodBad' ? (
+        <View style={styles.goodBadContainer}>
+          <View style={styles.goodBadColumn}>
+            {goodLogs.map(log => (
+              <View key={log._id} style={styles.goodBadItem}>
+                <Text style={styles.goodBadTitle}>{log.title}</Text>
+                <Text style={styles.goodBadDescription}>{log.description}</Text>
+              </View>
+            ))}
+          </View>
+          <View style={styles.goodBadColumn}>
+            {badLogs.map(log => (
+              <View key={log._id} style={styles.goodBadItem}>
+                <Text style={styles.goodBadTitle}>{log.title}</Text>
+                <Text style={styles.goodBadDescription}>{log.description}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      ) : (
+        <ActivityList
+          activityLogs={sortLogs([...activityLogs], sortOrder)}
+          sortOrder={sortOrder}
+          handleDeleteLog={handleDeleteLog}
+          handleEdit={handleEdit}
+          deleteMode={deleteMode}
+        />
+      )}
       <EditLogModal
         visible={!!editingLog}
         log={editingLog}
