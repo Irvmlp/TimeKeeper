@@ -205,47 +205,35 @@ const AllDailyActivities = ({ editable, onLogActivity }) => {
     </View>
   );
 
-  const chunkArray = (array, size) => {
-    const result = [];
-    for (let i = 0; i < array.length; i += size) {
-      result.push(array.slice(i, i + size));
-    }
-    return result;
-  };
-
-  const rowsData = chunkArray(dailyData, 8);
-
   return (
     <View>
-      {rowsData.map((row, index) => (
-        <View key={index} style={styles.row}>
-          <FlatList
-            data={row}
-            keyExtractor={item => item._id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.itemContainer}>
-                <TouchableOpacity style={styles.item} onPress={() => handleItemPress(item)}>
-                  <View style={styles.itemTextContainer}>
-                    <Text style={styles.itemTitle}>{item.title}</Text>
-                  </View>
-                  {editable && (
-                    <TouchableOpacity onPress={() => handleDelete(item._id.toString())}>
-                      <Text style={styles.deleteButton}>Delete</Text>
-                    </TouchableOpacity>
-                  )}
-                </TouchableOpacity>
+      <View style={styles.ItemContainerMaster}>
+      <FlatList
+        data={dailyData}
+        keyExtractor={item => item._id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.itemContainer}>
+            <TouchableOpacity style={styles.item} onPress={() => handleItemPress(item)}>
+              <View style={styles.itemTextContainer}>
+                <Text style={styles.itemTitle}>{item.title}</Text>
               </View>
-            )}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
-      ))}
+              {editable && (
+                <TouchableOpacity onPress={() => handleDelete(item._id.toString())}>
+                  <Text style={styles.deleteButton}>Delete</Text>
+                </TouchableOpacity>
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
+        numColumns={8} // Set the number of columns to 8
+        showsVerticalScrollIndicator={true}
+      />
       <Modal visible={showModal} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
           {renderModalContent()}
         </View>
       </Modal>
+      </View>
     </View>
   );
 };

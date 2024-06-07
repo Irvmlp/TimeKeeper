@@ -4,9 +4,9 @@ const screenWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
   container: {
-    flexGrow: 1,
-    justifyContent: 'flex-end',
-    padding: 8,
+    flex: 1,
+    justifyContent: 'center', // Center the item vertically in the container
+    alignItems: 'center', // Center the item horizontally in the container
   },
   chartTitle: {
     fontSize: 20,
@@ -39,7 +39,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: screenWidth - 26,
+    width: screenWidth - 40,
     margin: 4,
     padding: 3,
     borderBottomWidth: 0.4,
@@ -147,92 +147,6 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  controlButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  sortButton: {
-    backgroundColor: '#F0F4F8',
-    padding: 8,
-    borderRadius: 4,
-    margin: 4,
-    borderWidth: 1,
-    borderColor: '#E0E4ED',
-  },
-  selectedButton: {
-    backgroundColor: 'white',
-    borderRadius: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-  },
-  selectedText: {
-    color: 'white',
-  },
-  buttonText: {
-    fontSize: 12,
-    color: '#291F58',
-  },
-  deleteToggle: {
-    padding: 8,
-    borderRadius: 4,
-    margin: 4,
-    borderWidth: 1,
-    borderColor: '#E0E4ED',
-    backgroundColor: '#F0F4F8',
-  },
-  deleteToggleText: {
-    color: 'red',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  pickerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  pickerLabel: {
-    fontSize: 16,
-    fontWeight: 'light',
-    marginRight: 10,
-  },
-  dropdownButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: '#E0E4ED',
-    borderRadius: 4,
-    backgroundColor: '#F0F4F8',
-  },
-  dropdownButtonText: {
-    marginRight: 8,
-    fontSize: 14,
-    color: '#291F58',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    width: 200,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 10,
-  },
-  modalItem: {
-    padding: 10,
-  },
-  modalItemText: {
-    fontSize: 16,
-    color: '#291F58',
-  },
   goodBadContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -267,5 +181,22 @@ export default StyleSheet.create({
   },
   goodBadDescription: {
     fontSize: 12,
+  },
+  chartContainer: {
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  collapseButton: {
+    backgroundColor: '#087E8B',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  collapseButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

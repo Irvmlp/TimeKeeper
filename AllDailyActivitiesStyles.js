@@ -3,12 +3,16 @@ import { StyleSheet, Dimensions } from 'react-native';
 const screenWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
+  ItemContainerMaster: {
+    flexGrow: 1, 
+    paddingHorizontal: 11,
+
+  },
   itemContainer: {
-    padding: 12,
+    padding: 11,
     marginVertical: 3, 
     marginHorizontal: 1.2, 
     backgroundColor: 'white',
-    borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -17,6 +21,15 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    shadowRadius: 2,
+    elevation: 4,
+    backgroundColor: '#F0F4F8',
+    borderColor: '#E0E4ED',
+    borderRadius: 4,
+      justifyContent: 'center', // Center the item vertically in the container
+      alignItems: 'center', // Center the item horizontally in the container
+    
+
   },
   item: {
     width: 19,

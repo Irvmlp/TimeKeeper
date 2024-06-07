@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, Modal, FlatList } from 'react-native';
-import styles from './DailyLogsStyles';
+import styles from './ControlButtonStyles';
 
 const SortButtons = ({ sortOrder, setSortOrder, deleteMode, toggleDeleteMode }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,15 +18,14 @@ const SortButtons = ({ sortOrder, setSortOrder, deleteMode, toggleDeleteMode }) 
   return (
     <View style={styles.controlButtons}>
       <View style={styles.pickerContainer}>
-        <Text style={styles.pickerLabel}>Filter:</Text>
         <TouchableOpacity
           style={styles.dropdownButton}
           onPress={() => setModalVisible(true)}
         >
+          <Text style={styles.ChevronDown}>﹀</Text>
           <Text style={styles.dropdownButtonText}>
             {sortingOptions.find(option => option.value === sortOrder)?.label}
           </Text>
-         <Text> - </Text>
         </TouchableOpacity>
         <Modal
           transparent={true}
@@ -34,7 +33,11 @@ const SortButtons = ({ sortOrder, setSortOrder, deleteMode, toggleDeleteMode }) 
           animationType="fade"
           onRequestClose={() => setModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPressOut={() => setModalVisible(false)}
+          >
             <View style={styles.modalContent}>
               <FlatList
                 data={sortingOptions}
@@ -49,7 +52,7 @@ const SortButtons = ({ sortOrder, setSortOrder, deleteMode, toggleDeleteMode }) 
                 )}
               />
             </View>
-          </View>
+          </TouchableOpacity>
         </Modal>
       </View>
       <TouchableOpacity

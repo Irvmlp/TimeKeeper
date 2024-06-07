@@ -10,7 +10,7 @@ export const Chart = ({ chartData }) => (
     <BarChart
       data={chartData}
       width={screenWidth - 32}
-      height={190}
+      height={180}
       yAxisSuffix=" hrs"
       yAxisInterval={0.5}
       chartConfig={{
@@ -40,7 +40,8 @@ export const Chart = ({ chartData }) => (
       }}
       style={{
         borderRadius: 16,
-        marginVertical: 2,
+        marginVertical: 0,
+        marginBottom: -10,
         marginHorizontal: 8,
       }}
       fromZero={true}

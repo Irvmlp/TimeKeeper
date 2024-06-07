@@ -104,11 +104,14 @@ const Dashboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
+    paddingHorizontal: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'white',
   },
   scrollContainer: {
     padding: 0,
+    justifyContent: 'center',
     paddingBottom: 150,
   },
   title: {
@@ -132,7 +135,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   activitiesContainer: {
-    marginBottom: 10,
+    marginBottom: 14,
     marginHorizontal: 0,
   },
   buttonRow: {
