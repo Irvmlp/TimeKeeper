@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Button } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Modal, Button } from 'react-native';
 import { RealmContext } from './RealmWrapper';
 import styles from './AllDailyActivitiesStyles';
 

@@ -65,15 +65,32 @@ export default StyleSheet.create({
   },
   itemContent: {
     flex: 1,
-    gap: 6,
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 2,
   },
   itemEmoji: {
-    fontSize: 12,
-    padding: 3,
+    fontSize: 14,
+    paddingHorizontal: 3,
   },
   itemText2: {
-    width: 90,
+    flex: 1,
+    color: '#291F58',
+    paddingHorizontal: 3,
+  },
+  exclamationContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 3,
+  },
+  itemText3: {
+    fontFamily: 'bold',
+    color: '#291F58',
+    textAlign: 'left',
+  },
+  exclamationMark: {
+    fontSize: 14,
+    fontFamily: 'bold',
     color: '#291F58',
   },
   editButton: {
@@ -127,10 +144,10 @@ export default StyleSheet.create({
     marginTop: 4,
   },
   selectedItem: {
-    backgroundColor: 'rgba(0, 0, 255, 0.1)', // Light blue background for selected items
+    backgroundColor: '#F3D2CE', // Light blue background for selected items
   },
   deleteCheck: {
-    color: 'blue',
+    color: 'red',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -147,7 +164,13 @@ export default StyleSheet.create({
     borderColor: '#E0E4ED', // Add border color
   },
   selectedButton: {
-    backgroundColor: '#2E86ED', // Light blue for selected button
+    backgroundColor: 'white', // Light blue for selected button
+    borderRadius: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+
   },
   selectedText: {
     color: 'white', // Change text color to white when selected

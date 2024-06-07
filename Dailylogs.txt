@@ -1,0 +1,25 @@
+<View style={styles.timeFrameButtons}>
+        {['day', 'week', 'month', '3months', '6months', 'year', '5years', 'all'].map((tf) => (
+          <TouchableOpacity
+            key={tf}
+            onPress={() => setTimeFrame(tf)}
+            style={[styles.timeFrameButton, timeFrame === tf && styles.selectedTimeFrameButton]}
+          >
+            <Text style={styles.timeFrameButtonText}>{getTimeFrameLabel(tf)}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+
+      const getTimeFrameLabel = (timeFrame) => {
+    switch (timeFrame) {
+      case 'day': return 'Day';
+      case 'week': return '1W';
+      case 'month': return '1M';
+      case '3months': return '3M';
+      case '6months': return '6M';
+      case 'year': return '1YR';
+      case '5years': return '5YRS';
+      default: return 'All';
+    }
+  };
