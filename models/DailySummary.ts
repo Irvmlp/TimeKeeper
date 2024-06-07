@@ -1,4 +1,3 @@
-// models/DailySummary.ts
 import Realm from 'realm';
 
 // Define the Activity schema
@@ -26,6 +25,7 @@ class DailySummarySchema extends Realm.Object {
   date!: Date;
   totalDuration!: number;
   activities!: Realm.List<ActivitySchema>;
+  week!: string;  // Add this line
 
   static schema = {
     name: 'DailySummary',
@@ -36,6 +36,7 @@ class DailySummarySchema extends Realm.Object {
       date: 'date',
       totalDuration: 'double',
       activities: 'Activity[]', // This refers to the ActivitySchema
+      week: 'string', // Add this line
     },
   };
 }

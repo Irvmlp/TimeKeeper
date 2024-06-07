@@ -9,6 +9,12 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: 'white',
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 16,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -33,9 +39,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   activityTextContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    marginLeft: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   activityTitle: {
     fontSize: 16,
